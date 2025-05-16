@@ -160,7 +160,11 @@ codeunit 63063 "DCADV Http Management"
                 HttpResponse.Content.ReadAs(ResponseText);
                 SaveHttpContentToFileRequest(HttpContentContent, ResponseText, ApiService);
             end;
-            exit(true);
+            if not HttpResponse.IsSuccessStatusCode then
+                Error('Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3',
+                    ApiService, HttpResponse.HttpStatusCode, HttpResponse.ReasonPhrase)
+            else
+                exit(true);
         end;
     end;
 

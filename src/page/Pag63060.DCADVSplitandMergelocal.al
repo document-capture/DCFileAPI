@@ -669,10 +669,7 @@ page 63060 "DCADV Split and Merge local"
         DocPage.SETFILTER("Page No.", '>=%1', PageNo);
         DocPage.FINDSET;
 
-        REPEAT
-            NewPageNo += 1;
-            MovePage(DocPage."Document No.", DocPage."Page No.", NewDoc."No.", NewPageNo);
-        UNTIL DocPage.NEXT = 0;
+
 
         TempTiffFile.CreateTemp('tiff');
         TempPdfFile.CreateTemp('pdf');
@@ -698,6 +695,11 @@ page 63060 "DCADV Split and Merge local"
         DocToSplit.SetPdfFile(TempPdfFile);
         NewDoc.SetTiffFile(TempNewTiffFile);
         NewDoc.SetPdfFile(TempNewPdfFile);
+
+        REPEAT
+            NewPageNo += 1;
+            MovePage(DocPage."Document No.", DocPage."Page No.", NewDoc."No.", NewPageNo);
+        UNTIL DocPage.NEXT = 0;
 
         TempFileStorageClear();
 
@@ -829,11 +831,6 @@ page 63060 "DCADV Split and Merge local"
         END;
 
         DocPage.SETRANGE("Document No.", Document."No.");
-        IF DocPage.FINDSET THEN
-            REPEAT
-                PageNo += 1;
-                MovePage(DocPage."Document No.", DocPage."Page No.", FirstDoc."No.", PageNo);
-            UNTIL DocPage.NEXT = 0;
 
         TempTiffFile.CreateTemp('tiff');
         TempPdfFile.CreateTemp('pdf');
@@ -845,6 +842,12 @@ page 63060 "DCADV Split and Merge local"
         FirstDoc.GetPdfFile(TempFirstDocFile);
         Document.GetPdfFile(TempDocFile);
         PDFCombine(TempFirstDocFile, TempDocFile, TempPdfFile, HideError);
+
+        IF DocPage.FINDSET THEN
+            REPEAT
+                PageNo += 1;
+                MovePage(DocPage."Document No.", DocPage."Page No.", FirstDoc."No.", PageNo);
+            UNTIL DocPage.NEXT = 0;
 
         Document.SuspendDeleteCheck(TRUE);
         Document.DELETE(TRUE);
