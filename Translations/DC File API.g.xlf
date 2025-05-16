@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="DC File API">
+    <body>
+      <group id="body">
+        <trans-unit id="Page 2502520452 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
+          <source>About split and merge </source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Property AboutTitle</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Property 247559172" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You can **split** and **merge** document files. Furthermore, you can *move*, *rotate*, and *delete* individual document pages.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Property AboutText</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Split and Merge Documents</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 2734998216" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You cannot move documents up and down, only pages within a document can move up and down.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType NoMovedPages</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 3586074279" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You can only select %1 pages for splitting at a time.\If you need to split more pages, run the process repeatedly.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType NoOfPagesToSplitExceedsErr</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 1262451889" size-unit="char" translate="yes" xml:space="preserve">
+          <source>[NONE]</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType PageText001</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 624755272" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Page</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType PageText002</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 4174055487" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Source ID</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType SourceIDText</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 3627239401" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Source Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType SourceNameText</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please select pages of multiple documents ordered in sequence.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text001</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 3752334001" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You cannot select pages from single-page documents nor pages that are the first page in a document.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text002</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 732759939" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Splitting pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text004</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 1370456556" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Merging pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text005</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 2645849790" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 of %2</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text007</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - NamedType 1026443335" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Moving pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text011</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 3461615370 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source></source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Group1 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 1548525519 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source></source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Group2 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the name of the record this document belong. For purchase related documents this will show the name of the vendor.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Description - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 3461834954 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Description - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 2814919814 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the number of the document.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Display Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 2814919814 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Display Document No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 1176780756 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the primary key of the record this document belong. For purchase related documents this will show the number of the vendor.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control SourceID - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 1176780756 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Source ID</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control SourceID - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Control 181717972 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Page</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control CaptureUI - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 1929393835 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>F&amp;unctions</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Functions - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2820573540 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bring documents together</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Merge - Property AboutTitle</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2820573540 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Merge two or more documents. Even if only one page from a document is selected, the full document is merged.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Merge - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2820573540 - Property 247559172" size-unit="char" translate="yes" xml:space="preserve">
+          <source>If you are receiving multiple separate *PDF files* that belong together, you can easily **merge** these into one PDF file. To do this, mark the *documents* that are arranged in sequence and select **Merge**.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Merge - Property AboutText</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2820573540 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Merge</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Merge - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3887928477 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Move the selected page down in the document.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Move Down - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3887928477 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Move Down</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Move Down - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3931973280 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Move the selected page up in the document.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Move Up - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3931973280 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Move Up</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Move Up - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 1123480694 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Split the PDF file</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Split - Property AboutTitle</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 1123480694 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Split the document at the selected page and create a new document with the remaining pages.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Split - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 1123480694 - Property 247559172" size-unit="char" translate="yes" xml:space="preserve">
+          <source>If a *vendor* sends you a *PDF file* containing multiple *invoices*, you can easily **split** the PDF file into individual *documents*.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Split - Property AboutText</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 1123480694 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>&amp;Split</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Split - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2827347982 - Action 875513258 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4105952328">
+          <source>Create png preview files for selected document through the DC File API.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc List with Image Ext - Action CreatePngFromTiffViaFileAPI - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2827347982 - Action 875513258 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4105952328">
+          <source>Create Png via API</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc List with Image Ext - Action CreatePngFromTiffViaFileAPI - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2827347982 - Action 2945776232 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4105952328">
+          <source>Open the Split and Merge Documents page to delete, rotate, or change the order of individual pages in the PDF file.</source>
+          <note from="Developer" annotates="general" priority="2">Translation note: Please use the Search TM function to find the right term for "Split and Merge Documents".</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc List with Image Ext - Action Split and Merge local - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2827347982 - Action 2945776232 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4105952328">
+          <source>Split and Merge (local)</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc List with Image Ext - Action Split and Merge local - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2827347982 - Control 1429092069 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4105952328">
+          <source>Shows if the Document has png data</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc List with Image Ext - Control HasPngData - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2827347982 - Control 1429092069 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4105952328">
+          <source>Has Png Data</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc List with Image Ext - Control HasPngData - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2493242268 - Control 817783429 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1019536276">
+          <source>The URL to the DC File API Webservice.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc.Capt. Setup Card Ext - Control API Url - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2493242268 - Control 599906869 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1019536276">
+          <source>If this field is checked, the request to the DC File API will be saved and downloaded to the users client.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc.Capt. Setup Card Ext - Control Save requests - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 626993724 - Field 817783429 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1019536276">
+          <source>API Url</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension DCADV Doc.Capture Setup Ext - Field API Url - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 626993724 - Field 1049662853 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1019536276">
+          <source>Debug requests</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension DCADV Doc.Capture Setup Ext - Field Debug requests - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 94574598 - EnumValue 2827249175 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Color</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum DCADV Color Mode - EnumValue Color - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 94574598 - EnumValue 658624783 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Grayscale</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum DCADV Color Mode - EnumValue Grayscale - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 94574598 - EnumValue 408152311 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Monochrome</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum DCADV Color Mode - EnumValue Monochrome - Property Caption</note>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

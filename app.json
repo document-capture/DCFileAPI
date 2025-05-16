@@ -1,0 +1,50 @@
+{
+  "id": "c1e1bc23-6017-434a-956b-01cde4c742f1",
+  "name": "DC File API",
+  "publisher": "Continia Software GmbH",
+  "version": "24.0.5.0",
+  "brief": "",
+  "description": "Proof of concept of IIS based API to handle file handling and conversions to support universal code compliant customers without online access",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "https://github.com/document-capture/DCFileAPI",
+  "logo": "./images/logo.png",
+  "dependencies": [
+    {
+      "id": "4b915d7e-c02a-435f-85ab-649086c1e002",
+      "name": "Continia Core",
+      "publisher": "Continia Software",
+      "version": "25.0.0.0"
+    },
+    {
+      "id": "6da8dd2f-e698-461f-9147-8e404244dd85",
+      "name": "Continia Document Capture",
+      "publisher": "Continia Software",
+      "version": "25.0.0.0"
+    }
+  ],
+  "screenshots": [],
+  "platform": "24.0.0.0",
+  "application": "24.0.0.0",
+  "idRanges": [
+    {
+      "from": 63060,
+      "to": 63069
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "13.0",
+  "features": [
+    "NoImplicitWith",
+    "TranslationFile"
+  ],
+  "supportedLocales": [
+    "en-US",
+    "de-DE"
+  ]
+}
