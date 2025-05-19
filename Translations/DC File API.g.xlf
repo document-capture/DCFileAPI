@@ -3,6 +3,11 @@
   <file datatype="xml" source-language="en-US" target-language="en-US" original="DC File API">
     <body>
       <group id="body">
+        <trans-unit id="Codeunit 4187524457 - Method 4204766735 - NamedType 3326485837" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3</source>
+          <note from="Developer" annotates="general" priority="2">Shows the error message if the API call was not successfull. %1 = API Service, %2 = Status Code, %3 = Reason</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Http Management - Method SendHttpRequest - NamedType lblHttpErrorMsg</note>
+        </trans-unit>
         <trans-unit id="Page 2502520452 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
           <source>About split and merge </source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -77,16 +82,6 @@
           <source>Moving pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - NamedType Text011</note>
-        </trans-unit>
-        <trans-unit id="Page 2502520452 - Control 3461615370 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source></source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Group1 - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 2502520452 - Control 1548525519 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source></source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Control Group2 - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2502520452 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the name of the record this document belong. For purchase related documents this will show the name of the vendor.</source>

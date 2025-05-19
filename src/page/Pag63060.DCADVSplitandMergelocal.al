@@ -21,12 +21,9 @@ page 63060 "DCADV Split and Merge local"
         {
             group(Group1)
             {
-                Caption = '';
-
             }
             repeater(Group2)
             {
-                Caption = '';
                 field("Display Document No."; Rec."Display Document No.")
                 {
                     ApplicationArea = All;
@@ -668,8 +665,6 @@ page 63060 "DCADV Split and Merge local"
         DocPage.SETRANGE("Document No.", DocToSplit."No.");
         DocPage.SETFILTER("Page No.", '>=%1', PageNo);
         DocPage.FINDSET;
-
-
 
         TempTiffFile.CreateTemp('tiff');
         TempPdfFile.CreateTemp('pdf');

@@ -137,6 +137,8 @@ codeunit 63063 "DCADV Http Management"
         TempBlob: Codeunit "Temp Blob";
         OutStr: OutStream;
         InStr: InStream;
+
+        lblHttpErrorMsg: Label 'Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3', Locked = false, Comment = 'Shows the error message if the API call was not successfull. %1 = API Service, %2 = Status Code, %3 = Reason';
     begin
         DCSetup.Get();
         DCSetup.TestField("API Url");
@@ -161,8 +163,7 @@ codeunit 63063 "DCADV Http Management"
                 SaveHttpContentToFileRequest(HttpContentContent, ResponseText, ApiService);
             end;
             if not HttpResponse.IsSuccessStatusCode then
-                Error('Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3',
-                    ApiService, HttpResponse.HttpStatusCode, HttpResponse.ReasonPhrase)
+                Error(lblHttpErrorMsg, ApiService, HttpResponse.HttpStatusCode, HttpResponse.ReasonPhrase)
             else
                 exit(true);
         end;
