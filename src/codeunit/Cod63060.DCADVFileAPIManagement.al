@@ -1,4 +1,3 @@
-//https://simplanova.com/blog/the-building-blocks-of-als-http-integration-in-dynamics-365-bc/
 codeunit 63060 "DCADV File API Management"
 {
     var
