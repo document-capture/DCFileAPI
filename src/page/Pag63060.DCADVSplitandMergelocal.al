@@ -569,22 +569,6 @@ page 63060 "DCADV Split and Merge local"
     end;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     internal procedure SplitPages(var SelectedPages: Record "CDC Temp. Document Page"; var PagesToSplit: Record "CDC Temp. Document Page"; var NewDocNo: array[150] of Code[20]) NewDocCount: Integer
     var
         Document: Record "CDC Document";
