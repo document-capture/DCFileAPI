@@ -270,6 +270,27 @@ page 63060 "DCADV Split and Merge local"
                         Rec.SETCURRENTKEY("Document No.");
                     end;
                 }
+                action(Rotate)
+                {
+                    // ApplicationArea = All;
+                    // Caption = 'Rotate';
+                    // Image = Delegate;
+                    // Promoted = true;
+                    // PromotedCategory = Process;
+                    // PromotedIsBig = true;
+                    // ShortCutKey = 'Ctrl+R';
+                    // ToolTip = 'Rotate the current page 90 degrees in clockwise direction.';
+
+                    // trigger OnAction()
+                    // var
+                    //     DocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
+                    // begin
+                    //     CLEAR(TempDocPage);
+                    //     CurrPage.SETSELECTIONFILTER(TempDocPage);
+                    //     DocModMgt.RotatePages(TempDocPage);
+                    //     UpdateImage;
+                    // end;
+                }
                 // action(Rotate)
                 // {
                 //     ApplicationArea = All;
@@ -291,78 +312,81 @@ page 63060 "DCADV Split and Merge local"
                 //         UpdateImage;
                 //     end;
                 // }
-                // action(Delete)
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Delete';
-                //     Enabled = DeleteEnabled;
-                //     Image = Reject;
-                //     Promoted = true;
-                //     PromotedCategory = Process;
-                //     PromotedIsBig = true;
-                //     ShortCutKey = 'Ctrl+Delete';
-                //     ToolTip = 'Delete the selected page from the document.';
+                action(Delete)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Delete';
+                    Enabled = DeleteEnabled;
+                    Image = Reject;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ShortCutKey = 'Ctrl+Delete';
+                    ToolTip = 'Delete the selected page from the document.';
 
-                //     trigger OnAction()
-                //     var
-                //         TempDocPage2: Record "CDC Temp. Document Page" temporary;
-                //         DocModMgt: Codeunit "CDC Document Modification Mgt.";
-                //         PrevDocNo: Code[20];
-                //         EntryNo: Integer;
-                //         "Count": Integer;
-                //         SecureArchiveManagement: Codeunit "CDC Secure Archive Management";
-                //         Document: Record "CDC Document";
-                //     begin
-                //         EntryNo := "Entry No.";
-                //         CLEAR(TempDocPage);
-                //         CurrPage.SETSELECTIONFILTER(TempDocPage);
-                //         IF NOT DocModMgt.DeletePages(TempDocPage, TempDocPage2) THEN
-                //             EXIT;
+                    trigger OnAction()
+                    var
+                        TempDocPage2: Record "CDC Temp. Document Page" temporary;
+                        DocModMgt: Codeunit "CDC Document Modification Mgt.";
+                        PrevDocNo: Code[20];
+                        EntryNo: Integer;
+                        "Count": Integer;
+                        SecureArchiveManagement: Codeunit "CDC Secure Archive Management";
+                        Document: Record "CDC Document";
 
-                //         TempDocPage2.FINDSET;
-                //         REPEAT
-                //             IF PrevDocNo <> TempDocPage2."Document No." THEN BEGIN
-                //                 PrevDocNo := TempDocPage2."Document No.";
-                //                 Count := 0;
-                //             END ELSE
-                //                 Count += 1;
+                        DCADVDocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
+                    begin
+                        EntryNo := Rec."Entry No.";
+                        CLEAR(TempDocPage);
+                        CurrPage.SETSELECTIONFILTER(TempDocPage);
+                        IF NOT DCADVDocModMgt.DeletePages(TempDocPage, TempDocPage2) THEN
+                            EXIT;
 
-                //             GET(TempDocPage2."Entry No.");
-                //             DELETE;
-                //             TempDocPage.GET(TempDocPage2."Entry No.");
-                //             TempDocPage.DELETE;
+                        TempDocPage2.FINDSET;
+                        REPEAT
+                            IF PrevDocNo <> TempDocPage2."Document No." THEN BEGIN
+                                PrevDocNo := TempDocPage2."Document No.";
+                                Count := 0;
+                            END ELSE
+                                Count += 1;
 
-                //             SETRANGE("Document No.", TempDocPage2."Document No.");
-                //             IF FINDSET(TRUE) THEN
-                //                 REPEAT
-                //                     IF Page >= TempDocPage2.Page - Count THEN BEGIN
-                //                         Page -= 1;
-                //                         "Display Document No." := '';
-                //                         IF Page = 1 THEN
-                //                             "Display Document No." := "Document No.";
-                //                         MODIFY;
+                            Rec.GET(TempDocPage2."Entry No.");
+                            Rec.DELETE;
+                            TempDocPage.GET(TempDocPage2."Entry No.");
+                            TempDocPage.DELETE;
 
-                //                         TempDocPage := Rec;
-                //                         TempDocPage.MODIFY;
-                //                     END;
-                //                 UNTIL NEXT = 0;
-                //             SecureArchiveManagement.LogDocumentPageDelete(TempDocPage2);
-                //             IF SecureArchiveManagement.SecureArchiveEnabled THEN
-                //                 IF Document.GET("Document No.") THEN
-                //                     SecureArchiveManagement.CalculateAndAssignFileHash(Document);
-                //         UNTIL TempDocPage2.NEXT = 0;
+                            Rec.SETRANGE("Document No.", TempDocPage2."Document No.");
+                            IF Rec.FINDSET(TRUE) THEN
+                                REPEAT
+                                    IF Rec.Page >= TempDocPage2.Page - Count THEN BEGIN
+                                        Rec.Page -= 1;
+                                        Rec."Display Document No." := '';
+                                        IF Rec.Page = 1 THEN
+                                            Rec."Display Document No." := Rec."Document No.";
+                                        Rec.MODIFY;
 
-                //         SETRANGE("Document No.");
-                //         SETFILTER("Entry No.", '>=%1', EntryNo);
-                //         IF NOT FINDFIRST THEN BEGIN
-                //             SETRANGE("Entry No.");
-                //             IF FINDLAST THEN;
-                //         END ELSE
-                //             SETRANGE("Entry No.");
+                                        TempDocPage := Rec;
+                                        TempDocPage.MODIFY;
+                                    END;
+                                UNTIL Rec.NEXT = 0;
+                        //TODO SEcurearchive integration
+                        //SecureArchiveManagement.LogDocumentPageDelete(TempDocPage2);
+                        // IF SecureArchiveManagement.SecureArchiveEnabled THEN
+                        //     IF Document.GET("Document No.") THEN
+                        //         SecureArchiveManagement.CalculateAndAssignFileHash(Document);
+                        UNTIL TempDocPage2.NEXT = 0;
 
-                //         UpdateImage;
-                //     end;
-                // }
+                        Rec.SETRANGE("Document No.");
+                        Rec.SETFILTER("Entry No.", '>=%1', EntryNo);
+                        IF NOT Rec.FINDFIRST THEN BEGIN
+                            Rec.SETRANGE("Entry No.");
+                            IF Rec.FINDLAST THEN;
+                        END ELSE
+                            Rec.SETRANGE("Entry No.");
+
+                        UpdateImage;
+                    end;
+                }
             }
         }
     }
@@ -654,6 +678,7 @@ page 63060 "DCADV Split and Merge local"
         TempDocToSplitPdfFile: Record "CDC Temp File" temporary;
         TempNewTiffFile: Record "CDC Temp File" temporary;
         TempNewPdfFile: Record "CDC Temp File" temporary;
+        DocModify: Codeunit "DCADV Doc. Modification Mgt.";
         NewPageNo: Integer;
     begin
         DocToSplit.GET(DocNo);
@@ -674,13 +699,15 @@ page 63060 "DCADV Split and Merge local"
         DocToSplit.GetTiffFile(TempDocToSplitTiffFile);
         DocToSplit.GetPdfFile(TempDocToSplitPdfFile);
 
-        TIFFSplit(TempDocToSplitTiffFile,
-          TempTiffFile,
-          TempNewTiffFile,
-          PageNo - 1,
-          HideError);
+        DocModify.TIFFSplit(Rec,
+         TempDocToSplitTiffFile,
+         TempTiffFile,
+         TempNewTiffFile,
+         PageNo - 1,
+         HideError);
 
-        PDFSplit(TempDocToSplitPdfFile,
+        DocModify.PDFSplit(Rec,
+          TempDocToSplitPdfFile,
           TempPdfFile,
           TempNewPdfFile,
           PageNo - 1,
@@ -809,6 +836,7 @@ page 63060 "DCADV Split and Merge local"
         TempPdfFile: Record "CDC Temp File" temporary;
         TempDocFile: Record "CDC Temp File" temporary;
         TempFirstDocFile: Record "CDC Temp File" temporary;
+        DCADVDocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
         PageNo: Integer;
     begin
         FirstDoc.GET(FirstDocNo);
@@ -832,11 +860,11 @@ page 63060 "DCADV Split and Merge local"
 
         FirstDoc.GetTiffFile(TempFirstDocFile);
         Document.GetTiffFile(TempDocFile);
-        TiffCombine(TempFirstDocFile, TempDocFile, TempTiffFile, HideError);
+        DCADVDocModMgt.TiffCombine(Rec, TempFirstDocFile, TempDocFile, TempTiffFile, HideError);
 
         FirstDoc.GetPdfFile(TempFirstDocFile);
         Document.GetPdfFile(TempDocFile);
-        PDFCombine(TempFirstDocFile, TempDocFile, TempPdfFile, HideError);
+        DCADVDocModMgt.PDFCombine(Rec, TempFirstDocFile, TempDocFile, TempPdfFile, HideError);
 
         IF DocPage.FINDSET THEN
             REPEAT
@@ -1103,184 +1131,5 @@ page 63060 "DCADV Split and Merge local"
 
         TempFileSystem.RESET;
         TempFileSystem.DELETEALL(TRUE);
-    end;
-
-    procedure TiffSplit(var TempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer; HideError: Boolean) Success: Boolean
-    var
-
-        JsonBody: Text;
-        jsonObject: JsonObject;
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-        i: Integer;
-        JsonPngToken: JsonToken;
-        JsonPngObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        Base64Tiff: Text;
-        Convert: Codeunit "Base64 Convert";
-        PNGOutStr: OutStream;
-
-        HttpMgt: codeunit "DCADV Http Management";
-        JsonArray: JsonArray;
-    begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.SplitTiff_Request(jsonObject, TempFile, Rec."Document Category Code") then
-            error('Error in SplitTiff_Request');
-
-        // Create json body from request object
-        jsonObject.WriteTo(jsonBody);
-
-        // Build and send the request and get the response as json object        
-        if HttpMgt.SendHttpRequest(JsonArray, JsonBody, 'SplitTiff?PageNo=' + format(SplitAtPageNo), 'Post') then begin
-            for i := 1 to JsonArray.Count() do begin
-                JsonArray.Get(i - 1, JsonPngToken);
-                if JsonPngToken.IsObject then begin
-                    JsonPngObject := JsonPngToken.AsObject();
-                    if JsonPngObject.Get('data', JsonPageDataToken) then begin
-                        if not JsonPageDataToken.AsValue().IsNull then begin
-                            Base64Tiff := JsonPageDataToken.AsValue().AsText();
-
-                            if i = 1 then
-                                if not TempNewFile1.Data.HasValue then begin
-                                    TempNewFile1.Data.CreateOutStream(PNGOutStr);
-                                    Convert.FromBase64(Base64Tiff, PNGOutStr);
-                                end;
-                            if i = 2 then
-                                if not TempNewFile2.Data.HasValue then begin
-                                    TempNewFile2.Data.CreateOutStream(PNGOutStr);
-                                    Convert.FromBase64(Base64Tiff, PNGOutStr);
-                                end;
-                        end;
-                    end;
-                end;
-            end;
-        end;
-    end;
-
-
-    procedure PDFSplit(var TempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer; HideError: Boolean) Succes: Boolean
-    var
-        JsonBody: Text;
-        jsonObject: JsonObject;
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-        HttpMgt: Codeunit "DCADV Http Management";
-        JsonArrayValue: JsonArray;
-        i: Integer;
-        JsonPngToken: JsonToken;
-        JsonPngObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        Base64Tiff: Text;
-        Convert: Codeunit "Base64 Convert";
-        PNGOutStr: OutStream;
-    begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.SplitPDF_Request(jsonObject, TempFile, Rec."Document Category Code") then
-            Error('Error in SplitPDF_Request');
-
-        // Create json body from request object
-        jsonObject.WriteTo(jsonBody);
-
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(JsonArrayValue, JsonBody, 'SplitPDF?PageNo=' + format(SplitAtPageNo), 'Post') then begin
-            for i := 1 to JsonarrayValue.Count() do begin
-                JsonarrayValue.Get(i - 1, JsonPngToken);
-                if JsonPngToken.IsObject then begin
-                    JsonPngObject := JsonPngToken.AsObject();
-                    if JsonPngObject.Get('data', JsonPageDataToken) then begin  //TODO Claus => missing serizalization in C# Code
-                        if not JsonPageDataToken.AsValue().IsNull then begin
-                            Base64Tiff := JsonPageDataToken.AsValue().AsText();
-
-                            if i = 1 then
-                                if not TempNewFile1.Data.HasValue then begin
-                                    TempNewFile1.Data.CreateOutStream(PNGOutStr);
-                                    Convert.FromBase64(Base64Tiff, PNGOutStr);
-                                end;
-                            if i = 2 then
-                                if not TempNewFile2.Data.HasValue then begin
-                                    TempNewFile2.Data.CreateOutStream(PNGOutStr);
-                                    Convert.FromBase64(Base64Tiff, PNGOutStr);
-                                end;
-                        end;
-                    end;
-                end;
-            end;
-        end;
-    end;
-
-
-
-    procedure TiffCombine(var TempFile1: Record "CDC Temp File" temporary; var TempFile2: Record "CDC Temp File" temporary; var TempNewFile: Record "CDC Temp File" temporary; HideError: Boolean) Success: Boolean
-    var
-
-        JsonBody: Text;
-        jsonObject: JsonObject;
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-
-        JsonPngObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        Base64Tiff: Text;
-        Convert: Codeunit "Base64 Convert";
-        PNGOutStr: OutStream;
-
-        HttpMgt: Codeunit "DCADV Http Management";
-    begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.MergeTiff_Request(jsonObject, TempFile1, TempFile2, Rec."Document Category Code") then
-            error('Error in MergeTiff_Request');
-
-        // Create json body from request object
-        jsonObject.WriteTo(jsonBody);
-
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(JsonPngObject, JsonBody, 'MergeTiff', 'Post') then begin
-            if JsonPngObject.Get('Data', JsonPageDataToken) then begin
-                if not JsonPageDataToken.AsValue().IsNull then begin
-                    Base64Tiff := JsonPageDataToken.AsValue().AsText();
-
-                    if not TempNewFile.Data.HasValue then begin
-                        TempNewFile.Data.CreateOutStream(PNGOutStr);
-                        Convert.FromBase64(Base64Tiff, PNGOutStr);
-                    end;
-
-                end;
-            end;
-        end;
-    end;
-
-
-    procedure PDFCombine(var TempFile1: Record "CDC Temp File" temporary; var TempFile2: Record "CDC Temp File" temporary; var TempNewFile: Record "CDC Temp File" temporary; HideError: Boolean) Success: Boolean
-    var
-        JsonBody: Text;
-        jsonObject: JsonObject;
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-
-        JsonPngObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        Base64Tiff: Text;
-        Convert: Codeunit "Base64 Convert";
-        PNGOutStr: OutStream;
-
-        HttpMgt: Codeunit "DCADV Http Management";
-    begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.MergePDF_Request(jsonObject, TempFile1, TempFile2, Rec."Document Category Code") then
-            Error('Error in MergePDF_Request');
-
-        // Create json body from request object
-        jsonObject.WriteTo(jsonBody);
-
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(JsonPngObject, JsonBody, 'MergePDF', 'Post') then begin
-            if JsonPngObject.Get('Data', JsonPageDataToken) then begin
-                if not JsonPageDataToken.AsValue().IsNull then begin
-                    Base64Tiff := JsonPageDataToken.AsValue().AsText();
-
-                    if not TempNewFile.Data.HasValue then begin
-                        TempNewFile.Data.CreateOutStream(PNGOutStr);
-                        Convert.FromBase64(Base64Tiff, PNGOutStr);
-                    end;
-
-                end;
-            end;
-        end;
     end;
 }

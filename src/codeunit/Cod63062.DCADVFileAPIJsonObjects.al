@@ -13,17 +13,32 @@ codeunit 63062 "DCADV File API JsonObjects"
         exit(true);
     end;
 
-    /// <summary>
-    /// Creates JsonObject request to convert a Tiff document from a given CDC document record into a png file
-    /// {
-    ///   "data": "string",
-    ///   "colorMode": 0,
-    ///   "resolution": 0
-    /// }
-    /// </summary>
-    /// <param name="RequestObject">Passed Jsonobject that holds the request content</param>
-    /// <param name="CDCDocument">CDC Document that should be converted</param>
-    /// <returns>True if the request have been build successfully</returns>
+    internal procedure DeleteFromPDF_Request(var RequestObject: JsonObject; CDCDocument: Record "CDC Document"): Boolean
+    var
+        TempFile: Record "CDC Temp File";
+        Convert: Codeunit "Base64 Convert";
+        InStr: InStream;
+    begin
+        CDCDocument.GetPdfFile(TempFile);
+
+        if not TempFile.Data.HasValue then
+            exit(false);
+
+        TempFile.Data.CreateInStream(InStr);
+
+        exit(CreateConvertFileJson(RequestObject, Convert.ToBase64(InStr), GetDocumentCategoryColorMode(CDCDocument."Document Category Code"), GetDocumentCategoryResolution(CDCDocument."Document Category Code")));
+
+    end; /// <summary>
+         /// Creates JsonObject request to convert a Tiff document from a given CDC document record into a png file
+         /// {
+         ///   "data": "string",
+         ///   "colorMode": 0,
+         ///   "resolution": 0
+         /// }
+         /// </summary>
+         /// <param name="RequestObject">Passed Jsonobject that holds the request content</param>
+         /// <param name="CDCDocument">CDC Document that should be converted</param>
+         /// <returns>True if the request have been build successfully</returns>
     internal procedure ConvertTiffToPng_Request(var RequestObject: JsonObject; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
