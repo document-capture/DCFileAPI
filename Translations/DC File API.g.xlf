@@ -3,6 +3,31 @@
   <file datatype="xml" source-language="en-US" target-language="en-US" original="DC File API">
     <body>
       <group id="body">
+        <trans-unit id="Codeunit 1310323672 - NamedType 3712881" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 of %2</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - NamedType RotatingPagesProgressCounterLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - NamedType 573417673" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotating pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - NamedType RotatingPagesProgressWindowLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - Method 2371342291 - NamedType 83108210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Do you want to delete the selected %1 pages?</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - Method DeletePages - NamedType DeleteSelectedPagesQst</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - Method 2371342291 - NamedType 1502176255" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Do you want to delete the selected page?</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - Method DeletePages - NamedType DeleteSelectedPageQst</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - Method 2371342291 - NamedType 683339427" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deleting pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - Method DeletePages - NamedType DeletingPagesProgress</note>
+        </trans-unit>
         <trans-unit id="Codeunit 4187524457 - Method 4204766735 - NamedType 3326485837" size-unit="char" translate="yes" xml:space="preserve">
           <source>Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3</source>
           <note from="Developer" annotates="general" priority="2">Shows the error message if the API call was not successfull. %1 = API Service, %2 = Status Code, %3 = Reason</note>
@@ -123,6 +148,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Functions - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2477294019 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete the selected page from the document.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Delete - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2477294019 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Delete - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2502520452 - Action 2820573540 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
           <source>Bring documents together</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -162,6 +197,16 @@
           <source>Move Up</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Move Up - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3340817779 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotate the current page 90 degrees in clockwise direction.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Rotate - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3340817779 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotate</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Rotate - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2502520452 - Action 1123480694 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
           <source>Split the PDF file</source>

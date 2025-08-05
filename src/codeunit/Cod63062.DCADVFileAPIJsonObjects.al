@@ -13,7 +13,23 @@ codeunit 63062 "DCADV File API JsonObjects"
         exit(true);
     end;
 
-    internal procedure DeleteFromPDF_Request(var RequestObject: JsonObject; CDCDocument: Record "CDC Document"): Boolean
+    internal procedure CreateDeleteFromFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToDeleteJsonArray: JsonArray): Boolean
+    begin
+        JsonObject.Add('Data', DataBase64);
+
+        JsonObject.Add('pages', PagesToDeleteJsonArray);
+        exit(true);
+    end;
+
+    internal procedure CreateRotateFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToDeleteJsonArray: JsonArray; rotationAngle: Integer): Boolean
+    begin
+        JsonObject.Add('data', DataBase64);
+        JsonObject.Add('pages', PagesToDeleteJsonArray);
+        JsonObject.Add('rotationAngle', rotationAngle);
+        exit(true);
+    end;
+
+    internal procedure DeleteFromPDF_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
         Convert: Codeunit "Base64 Convert";
@@ -26,19 +42,84 @@ codeunit 63062 "DCADV File API JsonObjects"
 
         TempFile.Data.CreateInStream(InStr);
 
-        exit(CreateConvertFileJson(RequestObject, Convert.ToBase64(InStr), GetDocumentCategoryColorMode(CDCDocument."Document Category Code"), GetDocumentCategoryResolution(CDCDocument."Document Category Code")));
+        exit(CreateDeleteFromFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray));
 
-    end; /// <summary>
-         /// Creates JsonObject request to convert a Tiff document from a given CDC document record into a png file
-         /// {
-         ///   "data": "string",
-         ///   "colorMode": 0,
-         ///   "resolution": 0
-         /// }
-         /// </summary>
-         /// <param name="RequestObject">Passed Jsonobject that holds the request content</param>
-         /// <param name="CDCDocument">CDC Document that should be converted</param>
-         /// <returns>True if the request have been build successfully</returns>
+    end;
+
+    internal procedure DeleteFromTiff_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; CDCDocument: Record "CDC Document"): Boolean
+    var
+        TempFile: Record "CDC Temp File";
+        Convert: Codeunit "Base64 Convert";
+        InStr: InStream;
+    begin
+        CDCDocument.GetTiffFile(TempFile);
+
+        if not TempFile.Data.HasValue then
+            exit(false);
+
+        TempFile.Data.CreateInStream(InStr);
+
+        exit(CreateDeleteFromFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray));
+    end;
+
+    internal procedure RotatePdfPages_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; RotationAngle: Integer; CDCDocument: Record "CDC Document"): Boolean
+    var
+        TempFile: Record "CDC Temp File";
+        Convert: Codeunit "Base64 Convert";
+        InStr: InStream;
+    begin
+        CDCDocument.GetPdfFile(TempFile);
+
+        if not TempFile.Data.HasValue then
+            exit(false);
+
+        TempFile.Data.CreateInStream(InStr);
+
+        exit(CreateRotateFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray, RotationAngle));
+    end;
+
+    internal procedure RotateTiffPages_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; RotationAngle: Integer; CDCDocument: Record "CDC Document"): Boolean
+    var
+        TempFile: Record "CDC Temp File";
+        Convert: Codeunit "Base64 Convert";
+        InStr: InStream;
+    begin
+        CDCDocument.GetTiffFile(TempFile);
+
+        if not TempFile.Data.HasValue then
+            exit(false);
+
+        TempFile.Data.CreateInStream(InStr);
+
+        exit(CreateRotateFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray, RotationAngle));
+    end;
+
+    /*
+
+    internal procedure RotateTiff_Request(var RequestObject: JsonObject; TempFile: Record "CDC Temp File" temporary; DocumentCategory: Code[10]): Boolean
+    var
+        Convert: Codeunit "Base64 Convert";
+        InStr: InStream;
+    begin
+        if not TempFile.Data.HasValue then
+            exit(false);
+
+        TempFile.Data.CreateInStream(InStr);
+
+        exit(CreateConvertFileJson(RequestObject, Convert.ToBase64(InStr), GetDocumentCategoryColorMode(DocumentCategory), GetDocumentCategoryResolution(DocumentCategory)));
+    end;
+*/
+    /// <summary>
+    /// Creates JsonObject request to convert a Tiff document from a given CDC document record into a png file
+    /// {
+    ///   "data": "string",
+    ///   "colorMode": 0,
+    ///   "resolution": 0
+    /// }
+    /// </summary>
+    /// <param name="RequestObject">Passed Jsonobject that holds the request content</param>
+    /// <param name="CDCDocument">CDC Document that should be converted</param>
+    /// <returns>True if the request have been build successfully</returns>
     internal procedure ConvertTiffToPng_Request(var RequestObject: JsonObject; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";

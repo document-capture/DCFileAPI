@@ -272,24 +272,25 @@ page 63060 "DCADV Split and Merge local"
                 }
                 action(Rotate)
                 {
-                    // ApplicationArea = All;
-                    // Caption = 'Rotate';
-                    // Image = Delegate;
-                    // Promoted = true;
-                    // PromotedCategory = Process;
-                    // PromotedIsBig = true;
-                    // ShortCutKey = 'Ctrl+R';
-                    // ToolTip = 'Rotate the current page 90 degrees in clockwise direction.';
+                    ApplicationArea = All;
+                    Caption = 'Rotate';
+                    Image = Delegate;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ShortCutKey = 'Ctrl+R';
+                    ToolTip = 'Rotate the current page 90 degrees in clockwise direction.';
 
-                    // trigger OnAction()
-                    // var
-                    //     DocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
-                    // begin
-                    //     CLEAR(TempDocPage);
-                    //     CurrPage.SETSELECTIONFILTER(TempDocPage);
-                    //     DocModMgt.RotatePages(TempDocPage);
-                    //     UpdateImage;
-                    // end;
+
+                    trigger OnAction()
+                    var
+                        DCADVDocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
+                    begin
+                        CLEAR(TempDocPage);
+                        CurrPage.SETSELECTIONFILTER(TempDocPage);
+                        DCADVDocModMgt.RotatePages(TempDocPage, 90);
+                        UpdateImage;
+                    end;
                 }
                 // action(Rotate)
                 // {
@@ -333,7 +334,6 @@ page 63060 "DCADV Split and Merge local"
                         "Count": Integer;
                         SecureArchiveManagement: Codeunit "CDC Secure Archive Management";
                         Document: Record "CDC Document";
-
                         DCADVDocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
                     begin
                         EntryNo := Rec."Entry No.";
@@ -509,7 +509,7 @@ page 63060 "DCADV Split and Merge local"
 
     internal procedure UpdateImage()
     begin
-        // CurrPage.CaptureUI.PAGE.SetForceUpdate(TRUE);
+        //CurrPage.CaptureUI.PAGE.SetForceUpdate(TRUE);
         // CurrPage.CaptureUI.PAGE.UpdatePage;
         CurrPage.UPDATE(FALSE);
     end;
