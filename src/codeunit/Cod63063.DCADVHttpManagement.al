@@ -19,7 +19,6 @@ codeunit 63063 "DCADV Http Management"
         RequestJsonToken: JsonToken;
         //ResponseJsonObject: JsonObject;
         ResponseJsonToken: JsonToken;
-        ResponseJsonArray: JsonArray;
         JsonContent: Text;
     begin
         // Process request data
@@ -125,18 +124,11 @@ codeunit 63063 "DCADV Http Management"
     /// <returns>True if the request have been send successfully and a json object has been retrieved from the response</returns>
     internal procedure SendHttpRequest(var HttpResponse: HttpResponseMessage; HttpContentContent: Text; ApiService: Text[100]; Method: Text[10]): Boolean
     var
-        RequestHeaders: HttpHeaders;
         ContentHeaders: HttpHeaders;
         HttpContent: HttpContent;
         HttpRequestMessage: HttpRequestMessage;
         HttpClient: HttpClient;
         ResponseText: Text;
-
-        TxtBuilder: TextBuilder;
-        Filename: Text;
-        TempBlob: Codeunit "Temp Blob";
-        OutStr: OutStream;
-        InStr: InStream;
 
         lblHttpErrorMsg: Label 'Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3', Locked = false, Comment = 'Shows the error message if the API call was not successfull. %1 = API Service, %2 = Status Code, %3 = Reason';
     begin
@@ -145,15 +137,12 @@ codeunit 63063 "DCADV Http Management"
 
         HttpRequestMessage.SetRequestUri(DCSetup."API Url" + ApiService);
         HttpRequestMessage.Method := Method;
-        //HttpRequestMessage.GetHeaders(RequestHeaders);
-        //RequestHeaders.Add('Authorization', SecretStrSubstNo('Bearer %1', AuthToken));
 
         HttpContent.WriteFrom(HttpContentContent);
         HttpContent.GetHeaders(ContentHeaders);
 
         ContentHeaders.Remove('Content-Type');
         ContentHeaders.Add('Content-Type', 'application/json');
-        //HttpContent.GetHeaders(ContentHeaders);
         HttpRequestMessage.Content(HttpContent);
 
         // Read the response as a string and save request and response as file to the user if Debug is enabled 

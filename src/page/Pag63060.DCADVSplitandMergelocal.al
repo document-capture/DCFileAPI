@@ -316,27 +316,7 @@ page 63060 "DCADV Split and Merge local"
                         UpdateImage;
                     end;
                 }
-                // action(Rotate)
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Rotate';
-                //     Image = Delegate;
-                //     Promoted = true;
-                //     PromotedCategory = Process;
-                //     PromotedIsBig = true;
-                //     ShortCutKey = 'Ctrl+R';
-                //     ToolTip = 'Rotate the current page 90 degrees in clockwise direction.';
 
-                //     trigger OnAction()
-                //     var
-                //         DocModMgt: Codeunit "CDC Document Modification Mgt.";
-                //     begin
-                //         CLEAR(TempDocPage);
-                //         CurrPage.SETSELECTIONFILTER(TempDocPage);
-                //         DocModMgt.RotatePages(TempDocPage);
-                //         UpdateImage;
-                //     end;
-                // }
                 action(Delete)
                 {
                     ApplicationArea = All;
@@ -707,19 +687,17 @@ page 63060 "DCADV Split and Merge local"
         DocToSplit.GetTiffFile(TempDocToSplitTiffFile);
         DocToSplit.GetPdfFile(TempDocToSplitPdfFile);
 
-        DocModify.TIFFSplit(Rec,
+        DocModify.TIFFSplit(Rec."Document Category Code",
          TempDocToSplitTiffFile,
          TempTiffFile,
          TempNewTiffFile,
-         PageNo - 1,
-         HideError);
+         PageNo - 1);
 
-        DocModify.PDFSplit(Rec,
+        DocModify.PDFSplit(Rec."Document Category Code",
           TempDocToSplitPdfFile,
           TempPdfFile,
           TempNewPdfFile,
-          PageNo - 1,
-          HideError);
+          PageNo - 1);
 
         DocToSplit.SetTiffFile(TempTiffFile);
         DocToSplit.SetPdfFile(TempPdfFile);

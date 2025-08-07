@@ -1,47 +1,13 @@
 
 codeunit 63062 "DCADV File API JsonObjects"
 {
+    var
+        Convert: Codeunit "Base64 Convert";
 
-    internal procedure CreateConvertFileJson(var JsonObject: JsonObject; DataBase64: Text; ColorMode: Enum "DCADV Color Mode"; Resolution: Integer): Boolean
-    begin
-        JsonObject.Add('Data', DataBase64);
-
-        JsonObject.Add('ColorMode', ColorMode.AsInteger());
-
-        JsonObject.Add('Resolution', Resolution);
-
-        exit(true);
-    end;
-
-    internal procedure CreateDeleteFromFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToDeleteJsonArray: JsonArray): Boolean
-    begin
-        JsonObject.Add('Data', DataBase64);
-
-        JsonObject.Add('pages', PagesToDeleteJsonArray);
-        exit(true);
-    end;
-
-    internal procedure CreateRotateFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToDeleteJsonArray: JsonArray; rotationAngle: Integer): Boolean
-    begin
-        JsonObject.Add('data', DataBase64);
-        JsonObject.Add('pages', PagesToDeleteJsonArray);
-        JsonObject.Add('rotationAngle', rotationAngle);
-        exit(true);
-    end;
-
-    internal procedure CreateTransformXmlFileJson(var JsonObject: JsonObject; StylesheetFileBase64: Text; XmlFileBase64: Text; StyleSheetName: Text): Boolean
-    begin
-        JsonObject.Add('stylesheetFile', StylesheetFileBase64);
-        //TODO JsonObject.Add('stylesheetFileExtension', StylesheetFileExtension);
-        JsonObject.Add('xmlFile', XmlFileBase64);
-        JsonObject.Add('mainStyleSheetName', StyleSheetName);
-        exit(true);
-    end;
-
+    // Internal procedures for API file operations >>>
     internal procedure DeleteFromPDF_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         CDCDocument.GetPdfFile(TempFile);
@@ -58,7 +24,6 @@ codeunit 63062 "DCADV File API JsonObjects"
     internal procedure DeleteFromTiff_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         CDCDocument.GetTiffFile(TempFile);
@@ -71,10 +36,9 @@ codeunit 63062 "DCADV File API JsonObjects"
         exit(CreateDeleteFromFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray));
     end;
 
-    internal procedure RotatePdfPages_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; RotationAngle: Integer; CDCDocument: Record "CDC Document"): Boolean
+    internal procedure RotatePdfPages_Request(var RequestObject: JsonObject; PagesToRotateJsonArray: JsonArray; RotationAngle: Integer; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         CDCDocument.GetPdfFile(TempFile);
@@ -84,13 +48,12 @@ codeunit 63062 "DCADV File API JsonObjects"
 
         TempFile.Data.CreateInStream(InStr);
 
-        exit(CreateRotateFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray, RotationAngle));
+        exit(CreateRotateFileJson(RequestObject, Convert.ToBase64(InStr), PagesToRotateJsonArray, RotationAngle));
     end;
 
-    internal procedure RotateTiffPages_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; RotationAngle: Integer; CDCDocument: Record "CDC Document"): Boolean
+    internal procedure RotateTiffPages_Request(var RequestObject: JsonObject; PagesToRotateJsonArray: JsonArray; RotationAngle: Integer; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         CDCDocument.GetTiffFile(TempFile);
@@ -100,24 +63,9 @@ codeunit 63062 "DCADV File API JsonObjects"
 
         TempFile.Data.CreateInStream(InStr);
 
-        exit(CreateRotateFileJson(RequestObject, Convert.ToBase64(InStr), PagesToDeleteJsonArray, RotationAngle));
+        exit(CreateRotateFileJson(RequestObject, Convert.ToBase64(InStr), PagesToRotateJsonArray, RotationAngle));
     end;
 
-    /*
-
-    internal procedure RotateTiff_Request(var RequestObject: JsonObject; TempFile: Record "CDC Temp File" temporary; DocumentCategory: Code[10]): Boolean
-    var
-        Convert: Codeunit "Base64 Convert";
-        InStr: InStream;
-    begin
-        if not TempFile.Data.HasValue then
-            exit(false);
-
-        TempFile.Data.CreateInStream(InStr);
-
-        exit(CreateConvertFileJson(RequestObject, Convert.ToBase64(InStr), GetDocumentCategoryColorMode(DocumentCategory), GetDocumentCategoryResolution(DocumentCategory)));
-    end;
-*/
     /// <summary>
     /// Creates JsonObject request to convert a Tiff document from a given CDC document record into a png file
     /// {
@@ -132,7 +80,6 @@ codeunit 63062 "DCADV File API JsonObjects"
     internal procedure ConvertTiffToPng_Request(var RequestObject: JsonObject; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         CDCDocument.GetTiffFile(TempFile);
@@ -159,7 +106,6 @@ codeunit 63062 "DCADV File API JsonObjects"
     /// <returns>True if the request have been build successfully</returns>
     internal procedure SplitTiff_Request(var RequestObject: JsonObject; TempFile: Record "CDC Temp File" temporary; DocumentCategory: Code[10]): Boolean
     var
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         if (not TempFile.Data.HasValue) then
@@ -183,8 +129,6 @@ codeunit 63062 "DCADV File API JsonObjects"
     /// <returns>True if the request have been build successfully</returns>
     internal procedure SplitPDF_Request(var RequestObject: JsonObject; TempFile: Record "CDC Temp File" temporary; DocumentCategory: Code[10]): Boolean
     var
-
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
     begin
         if (not TempFile.Data.HasValue) then
@@ -209,8 +153,6 @@ codeunit 63062 "DCADV File API JsonObjects"
     /// <returns>True if the request have been build successfully</returns>
     internal procedure MergeTiff_Request(var RequestObject: JsonObject; TempFile1: Record "CDC Temp File" temporary; TempFile2: Record "CDC Temp File" temporary; DocumentCategory: Code[10]): Boolean
     var
-
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
         RequestArray: JsonArray;
         TempJsonObject: JsonObject;
@@ -247,7 +189,6 @@ codeunit 63062 "DCADV File API JsonObjects"
     /// <returns></returns>
     internal procedure MergePDF_Request(var RequestObject: JsonObject; TempFile1: Record "CDC Temp File" temporary; TempFile2: Record "CDC Temp File" temporary; DocumentCategory: Code[10]): Boolean
     var
-        Convert: Codeunit "Base64 Convert";
         InStr: InStream;
         RequestArray: JsonArray;
         TempJsonObject: JsonObject;
@@ -270,9 +211,9 @@ codeunit 63062 "DCADV File API JsonObjects"
         exit(RequestObject.Add('convertFiles', RequestArray));
     end;
 
+
     internal procedure TransformXml_Request(var RequestObject: JsonObject; XmlFile: Record "CDC Temp File" temporary; StylesheetFile: Record "CDC Temp File" temporary; StylesheetName: Text): Boolean
     var
-        Convert: Codeunit "Base64 Convert";
         XmlFileInStr: InStream;
         StylesheetFileInStr: InStream;
     begin
@@ -285,6 +226,58 @@ codeunit 63062 "DCADV File API JsonObjects"
         exit(CreateTransformXmlFileJson(RequestObject, Convert.ToBase64(StylesheetFileInStr), Convert.ToBase64(XmlFileInStr), StylesheetName));
     end;
 
+    // Internal procedures for API file operations <<<
+
+    // Local procedures to create JsonObjects for various file operations >>>
+
+    /// <summary>
+    /// Creates the default JsonObject request to convert a file into another format.
+    /// </summary>
+    /// <param name="JsonObject">Reference to created JsonObject</param>
+    /// <param name="DataBase64">Base64 text</param>
+    /// <param name="ColorMode">Colormode for file conversion</param>
+    /// <param name="Resolution">Resolution for file conversion</param>
+    /// <returns></returns>
+    local procedure CreateConvertFileJson(var JsonObject: JsonObject; DataBase64: Text; ColorMode: Enum "DCADV Color Mode"; Resolution: Integer): Boolean
+    begin
+        JsonObject.Add('data', DataBase64);
+        JsonObject.Add('colorMode', ColorMode.AsInteger());
+        JsonObject.Add('resolution', Resolution);
+        exit(true);
+    end;
+
+    local procedure CreateDeleteFromFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToDeleteJsonArray: JsonArray): Boolean
+    begin
+        JsonObject.Add('data', DataBase64);
+        JsonObject.Add('pages', PagesToDeleteJsonArray);
+        exit(true);
+    end;
+
+    local procedure CreateRotateFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToRotateJsonArray: JsonArray; RotationAngle: Integer): Boolean
+    begin
+        JsonObject.Add('data', DataBase64);
+        JsonObject.Add('pages', PagesToRotateJsonArray);
+        JsonObject.Add('rotationAngle', RotationAngle);
+        exit(true);
+    end;
+
+    local procedure CreateTransformXmlFileJson(var JsonObject: JsonObject; StylesheetFileBase64: Text; XmlFileBase64: Text; StyleSheetName: Text): Boolean
+    begin
+        JsonObject.Add('stylesheetFile', StylesheetFileBase64);
+        JsonObject.Add('xmlFile', XmlFileBase64);
+        JsonObject.Add('mainStyleSheetName', StyleSheetName);
+        exit(true);
+    end;
+
+    // Local procedures to create JsonObjects for various file operations <<<
+
+    // Local helper procedures >>>
+
+    /// <summary>
+    /// Returns the resolution of the document category. The resolution is used to convert a tiff file into a png file.
+    /// </summary>
+    /// <param name="DocCategory">Document Category Code</param>
+    /// <returns>Integer value of document categorie's resolution</returns>
     local procedure GetDocumentCategoryResolution(DocCategory: Code[10]): Integer
     var
         CDCDocumentCategory: Record "CDC Document Category";
@@ -317,4 +310,5 @@ codeunit 63062 "DCADV File API JsonObjects"
         //Fall back to color mode if the document category is not found
         exit("DCADV Color Mode"::Color);
     end;
+    // Local helper procedures <<<
 }

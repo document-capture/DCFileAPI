@@ -3,7 +3,6 @@ codeunit 63060 "DCADV File API Management"
     var
         DCSetup: Record "CDC Document Capture Setup";
         HttpMgt: Codeunit "DCADV Http Management";
-        UrlParam: text;
 
     /// <summary>
     /// Test the connection to the Document Capture File API.
@@ -15,7 +14,9 @@ codeunit 63060 "DCADV File API Management"
         Headers: HttpHeaders;
         Response: HttpResponseMessage;
     begin
-        GetFileApiSetup();
+        DCSetup.Get();
+        DCSetup.TestField("API Url");
+
         Headers := Client.DefaultRequestHeaders;
         Headers.Add('Accept', '*/*');
 
@@ -24,24 +25,6 @@ codeunit 63060 "DCADV File API Management"
         else
             Error('Connection not successful:\%1 - %2', Response.HttpStatusCode, Response.ReasonPhrase);
 
-    end;
-
-    local procedure GetFileApiSetup(): Boolean
-    begin
-        if not DCSetup.Get() then
-            exit;
-
-        DCSetup.TestField("API Url");
-
-        exit(true);
-    end;
-
-    local procedure GetUrl(UrlParam: text): Text
-    begin
-        if not GetFileApiSetup() then
-            exit('');
-
-        exit(StrSubstNo('%1/%2', DCSetup."API Url", UrlParam));
     end;
 
     /// <summary>
@@ -152,26 +135,22 @@ codeunit 63060 "DCADV File API Management"
 
     internal procedure CreateCleanXMLFile(Document: Record "CDC Document"; var XmlTempFile: Record "CDC Temp File" temporary): Boolean
     var
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
+        StylesheetFile: Record "CDC Temp File" temporary;
         CleanXmlFile: Record "CDC Temp File" temporary;
         FileInterface: Codeunit "DCADV Document File Interface";
     begin
-        if RemoveNamespaces(XmlTempFile, CleanXmlFile, true) then
+        // Get the stylesheet file content for the XML transformation to a clean XML without namespaces
+        WriteAsText(StylesheetFile, GetRemoveNamespacesXSLTText_Clone());
+
+        if TransformFromStream(StylesheetFile, XmlTempFile, 'RemoveNamespace.xsl', CleanXmlFile, true) then
             Fileinterface.SetCleanXmlFile(Document, CleanXmlFile);
     end;
 
-    internal procedure RemoveNamespaces(var XmlFile: Record "CDC Temp File" temporary; var CleanXmlFile: Record "CDC Temp File" temporary; SuppressError: Boolean): Boolean
-    var
-        StylesheetFile: Record "CDC Temp File" temporary;
-        ErrorMessage: Text[1024];
-        TempText: Text[1024];
-        Result: Boolean;
-    begin
-        WriteAsText(StylesheetFile, GetRemoveNamespacesXSLTText_Clone());
-
-        exit(TransformFromStream(StylesheetFile, XmlFile, 'RemoveNamespace.xsl', CleanXmlFile, true));
-    end;
-
+    /// <summary>
+    /// Creates an HTML preview file from a XML file
+    /// </summary>
+    /// <param name="Document">CDC Document of type XML</param>
+    /// <returns>True if transformation was successful</returns>
     internal procedure CreateDocumentHtml(var Document: Record "CDC Document"): Boolean
     var
         Template: Record "CDC Template";
@@ -190,10 +169,6 @@ codeunit 63060 "DCADV File API Management"
             IF NOT Template.FINDFIRST THEN
                 EXIT(FALSE);
         END;
-
-        //DCADV Not needed:
-        //IF Template."Header eDoc. Table No." <> 0 THEN
-        //    EXIT(CreateHTMLFileFromXMLStructure(Document, ''));
 
         IF NOT GetStylesheetFile_Clone(StylesheetFile, Template) THEN
             EXIT(FALSE);
@@ -228,6 +203,15 @@ codeunit 63060 "DCADV File API Management"
         exit(FileInterface.SetHtmlFile(Document, HtmlFile));
     end;
 
+    /// <summary>
+    /// Retrieves the stylesheet content from the document's master template.
+    /// Here we use a hack to prevent DC from executing the default CreateHtml procedure and run into timeout issues.
+    /// Therefore we copy  the "XML Stylesheet File" from CDC Document into "XML Stylesheet File Copy" and use this one going forward.
+    /// Finally the original stylesheet content is deleted from the "XML Stylesheet File" field.
+    /// </summary>
+    /// <param name="TempFile">Temp. file to transport the result stylesheet content for later processing</param>
+    /// <param name="Template">Template record to use</param>
+    /// <returns></returns>
     local procedure GetStylesheetFile_Clone(var TempFile: Record "CDC Temp File" temporary; Template: Record "CDC Template"): Boolean
     var
         ReadStream: InStream;
@@ -256,7 +240,16 @@ codeunit 63060 "DCADV File API Management"
         EXIT(TRUE);
     end;
 
-    procedure TransformFromStream(StylesheetFile: Record "CDC Temp File" temporary; var XmlFile: Record "CDC Temp File" temporary; MainStylesheetFilename: Text[1024]; var OutputFile: Record "CDC Temp File" temporary; SuppressError: Boolean) Success: Boolean
+    /// <summary>
+    /// Transforms an XML file using a stylesheet file and returns the result in an output file.
+    /// </summary>
+    /// <param name="StylesheetFile">The stylesheet file as temp. file</param>
+    /// <param name="XmlFile">The original XML file</param>
+    /// <param name="MainStylesheetFilename">The name of the XML stylesheet file</param>
+    /// <param name="OutputFile">The response as styled xml/html temp. file document</param>
+    /// <param name="SuppressError"></param>
+    /// <returns></returns>
+    internal procedure TransformFromStream(StylesheetFile: Record "CDC Temp File" temporary; var XmlFile: Record "CDC Temp File" temporary; MainStylesheetFilename: Text[1024]; var OutputFile: Record "CDC Temp File" temporary; SuppressError: Boolean) Success: Boolean
     var
         DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
         XmlTransformService: Codeunit "CDC Xml Transformer SaaS";
@@ -296,19 +289,22 @@ codeunit 63060 "DCADV File API Management"
         end;
     end;
 
-    internal procedure WriteAsText(var TempFile: Record "CDC Temp File" temporary; Content: Text[1024])
+    local procedure WriteAsText(var TempFile: Record "CDC Temp File" temporary; Content: Text[1024])
     var
         OutStr: OutStream;
     begin
-        WITH TempFile DO BEGIN
-            CLEAR(Data);
-            IF Content = '' THEN
-                EXIT;
-            Data.CREATEOUTSTREAM(OutStr);
-            OutStr.WRITETEXT(Content);
-        END;
+
+        CLEAR(TempFile.Data);
+        IF Content = '' THEN
+            EXIT;
+        TempFile.Data.CREATEOUTSTREAM(OutStr);
+        OutStr.WRITETEXT(Content);
     end;
 
+    /// <summary>
+    /// Procedure creates a XSLT stylesheet file content to remove namespaces from an XML file.
+    /// </summary>
+    /// <returns></returns>
     local procedure GetRemoveNamespacesXSLTText_Clone(): Text[1024]
     begin
         EXIT(
