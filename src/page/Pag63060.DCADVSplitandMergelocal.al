@@ -270,11 +270,35 @@ page 63060 "DCADV Split and Merge local"
                         Rec.SETCURRENTKEY("Document No.");
                     end;
                 }
-                action(Rotate)
+
+                action(RotateCounterClockwise)
                 {
                     ApplicationArea = All;
-                    Caption = 'Rotate';
-                    Image = Delegate;
+                    Caption = 'Rotate left';
+                    Image = Insert;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    ShortCutKey = 'Ctrl+R';
+                    ToolTip = 'Rotate the current page 90 degrees in anti clockwise direction.';
+
+
+                    trigger OnAction()
+                    var
+                        DCADVDocModMgt: Codeunit "DCADV Doc. Modification Mgt.";
+                    begin
+                        CLEAR(TempDocPage);
+                        CurrPage.SETSELECTIONFILTER(TempDocPage);
+                        DCADVDocModMgt.RotatePages(TempDocPage, 270);
+                        UpdateImage;
+                    end;
+                }
+
+                action(RotateClockwise)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Rotate right';
+                    Image = GoTo;
                     Promoted = true;
                     PromotedCategory = Process;
                     PromotedIsBig = true;

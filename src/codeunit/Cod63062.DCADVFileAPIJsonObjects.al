@@ -29,6 +29,15 @@ codeunit 63062 "DCADV File API JsonObjects"
         exit(true);
     end;
 
+    internal procedure CreateTransformXmlFileJson(var JsonObject: JsonObject; StylesheetFileBase64: Text; XmlFileBase64: Text; StyleSheetName: Text): Boolean
+    begin
+        JsonObject.Add('stylesheetFile', StylesheetFileBase64);
+        //TODO JsonObject.Add('stylesheetFileExtension', StylesheetFileExtension);
+        JsonObject.Add('xmlFile', XmlFileBase64);
+        JsonObject.Add('mainStyleSheetName', StyleSheetName);
+        exit(true);
+    end;
+
     internal procedure DeleteFromPDF_Request(var RequestObject: JsonObject; PagesToDeleteJsonArray: JsonArray; CDCDocument: Record "CDC Document"): Boolean
     var
         TempFile: Record "CDC Temp File";
@@ -259,6 +268,21 @@ codeunit 63062 "DCADV File API JsonObjects"
         RequestArray.Add(TempJsonObject);
 
         exit(RequestObject.Add('convertFiles', RequestArray));
+    end;
+
+    internal procedure TransformXml_Request(var RequestObject: JsonObject; XmlFile: Record "CDC Temp File" temporary; StylesheetFile: Record "CDC Temp File" temporary; StylesheetName: Text): Boolean
+    var
+        Convert: Codeunit "Base64 Convert";
+        XmlFileInStr: InStream;
+        StylesheetFileInStr: InStream;
+    begin
+        if (not XmlFile.Data.HasValue) or (not StylesheetFile.Data.HasValue) then
+            exit(false);
+
+        XmlFile.Data.CreateInStream(XmlFileInStr);
+        StylesheetFile.Data.CreateInStream(StylesheetFileInStr);
+
+        exit(CreateTransformXmlFileJson(RequestObject, Convert.ToBase64(StylesheetFileInStr), Convert.ToBase64(XmlFileInStr), StylesheetName));
     end;
 
     local procedure GetDocumentCategoryResolution(DocCategory: Code[10]): Integer

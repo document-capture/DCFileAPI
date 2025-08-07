@@ -253,6 +253,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
 
     local procedure RotateDocumentPages(PagesToRotateJsonArray: JsonArray; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
     var
+        FileApiMgt: Codeunit "DCADV File API Management";
         NewPdfTempFile: Record "CDC Temp File" temporary;
         NewTiffTempFile: Record "CDC Temp File" temporary;
         PageNo: Integer;
@@ -272,6 +273,9 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
 
         if not Document.SetTiffFile(NewTiffTempFile) then
             Error('Error setting new Tiff file for document %1.', Document."No.");
+
+        // Convert new Tiff file to Png if necessary
+        FileApiMgt.CreatePngFromTiffViaFileAPI(Document);
 
         Commit();
 
