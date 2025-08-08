@@ -2,7 +2,6 @@ codeunit 63060 "DCADV File API Management"
 {
     var
         DCSetup: Record "CDC Document Capture Setup";
-        HttpMgt: Codeunit "DCADV Http Management";
 
     /// <summary>
     /// Test the connection to the Document Capture File API.
@@ -64,22 +63,9 @@ codeunit 63060 "DCADV File API Management"
     var
         DocumentPage: Record "CDC Document Page";
         TempFile: Record "CDC Temp File" temporary;
-        DCADVFileAPIJsonObj: Codeunit "DCADV File API JsonObjects";
         Convert: Codeunit "Base64 Convert";
-
+        ApiMgt: Codeunit "DCADV Json Management";
         i: Integer;
-        JsonBody: Text;
-        JsonObject: JsonObject;
-        JsonPagesToken: JsonToken;
-        JsonArrayValue: JsonArray;
-
-        JsonPngToken: JsonToken;
-        JsonPngObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        Base64Png: Text;
-        PNGOutStr: OutStream;
-
-        ApiMgt: Codeunit "DCADV API Management";
         TiffInStr: InStream;
     begin
         Document.CalcFields("No. of Pages");
@@ -143,7 +129,6 @@ codeunit 63060 "DCADV File API Management"
         StylesheetFile: Record "CDC Temp File" temporary;
         XmlFile: Record "CDC Temp File" temporary;
         HtmlFile: Record "CDC Temp File" temporary;
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
         MainStylesheetFilename: Text[1024];
         FileInterface: Codeunit "DCADV Document File Interface";
         FileMgt: Codeunit "File Management";
@@ -237,8 +222,8 @@ codeunit 63060 "DCADV File API Management"
     /// <returns></returns>
     internal procedure TransformFromStream(StylesheetFile: Record "CDC Temp File" temporary; var XmlFile: Record "CDC Temp File" temporary; MainStylesheetFilename: Text[1024]; var OutputFile: Record "CDC Temp File" temporary; SuppressError: Boolean) Success: Boolean
     var
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-        XmlTransformService: Codeunit "CDC Xml Transformer SaaS";
+        ApiMgt: Codeunit "DCADV Json Management";
+        //DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
         Convert: Codeunit "Base64 Convert";
         RequestJsonObject: JsonObject;
         ResponseJsonObject: JsonObject;
@@ -249,30 +234,17 @@ codeunit 63060 "DCADV File API Management"
         Base64Document: Text;
 
     begin
-        if not DCADVFileAPIJsonOBj.TransformXml_Request(RequestJsonObject, XmlFile, StylesheetFile, MainStylesheetFilename) then begin
-            if (GuiAllowed) and (not SuppressError) then
-                Error('Error creating request object for XML transformation.');
-            exit(false);
-        end;
+        ApiMgt.ClearAll();
+        if ApiMgt.AddFile('xmlFile', XmlFile) then
+            if ApiMgt.AddFile('stylesheetFile', StylesheetFile) then begin
+                ApiMgt.AddText('mainStyleSheetName', MainStylesheetFilename);
 
-        // Create json body from request object
-        RequestJsonObject.WriteTo(RequestJsonBody);
 
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(ResponseJsonObject, RequestJsonBody, 'TransformXml', 'Post') then begin
-            if ResponseJsonObject.Get('Data', DocumentJsonToken) then begin
-                if not DocumentJsonToken.AsValue().IsNull then begin
-                    Base64Document := DocumentJsonToken.AsValue().AsText();
-
-                    if StrLen(Base64Document) = 0 then
-                        exit(false);
-
-                    OutputFile.Data.CreateOutStream(DocumentOutStr);
-                    Convert.FromBase64(Base64Document, DocumentOutStr);
-                    exit(true);
+                // Send request and process response
+                if ApiMgt.Send('TransformXml', 'Post') then begin
+                    exit(ApiMgt.GetOutputFile(0, OutputFile));
                 end;
             end;
-        end;
     end;
 
     local procedure WriteAsText(var TempFile: Record "CDC Temp File" temporary; Content: Text[1024])

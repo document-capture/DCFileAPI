@@ -1,9 +1,9 @@
-//Clone of codeunit 6085635 "CDC Document File Interface"
+
 codeunit 63065 "DCADV Document File Interface"
 {
     // C/SIDE
     // revision:94
-
+    //Clone of codeunit 6085635 "CDC Document File Interface"
 
     trigger OnRun()
     begin
@@ -98,12 +98,6 @@ codeunit 63065 "DCADV Document File Interface"
 
             GotDCSetup := TRUE;
         END;
-
-        //DCADV IF DCSetup."Document Storage Type" = DCSetup."Document Storage Type"::"File System" THEN
-        //DCADV     DocFileSystem.SetDCSetup(DCSetup);
-
-        //DCADV IF DCSetup."Document Storage Type" = DCSetup."Document Storage Type"::"Azure Blob Storage" THEN
-        //DCADV     DocAzureBlobStorMgt.SetDCSetup(DCSetup);
 
         IF DCSetup."Document Storage Type" = DCSetup."Document Storage Type"::"File Service" THEN
             DocFileServiceMgt.SetDCSetup(DCSetup);

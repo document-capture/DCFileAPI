@@ -80,10 +80,25 @@ codeunit 63061 "DCADV File API Event Handler"
         end;
     end;
     //DocFileEvents.OnHasFile(GetFileName(Document, XmlTrimmedFileType), CurrentCompany, Document."No.", XmlTrimmedFileType, Result, Handled);
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"CDC Capture Engine", OnAfterFindDocumentSource, '', false, false)]
+    local procedure CaptureEngine_OnAfterFindDocumentSource(var Document: Record "CDC Document")
+    begin
+        if Document."Template No." = '' then begin
+            if Document."Source Record ID Tree ID" <> 0 then
+                Document.VALIDATE("Template No.", Document.GetDefaultTemplate(TRUE));
 
+            IF Document."Template No." = '' then
+                CreateHtmlFromXml(Document);
+        end;
+    end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"CDC Capture Engine", OnBeforeAutoDelegateDocument, '', false, false)]
     local procedure CaptureEngine_OnBeforeAutoDelegateDocument(var Document: Record "CDC Document"; var IsHandled: Boolean)
+    begin
+        IsHandled := CreateHtmlFromXml(Document);
+    end;
+
+    local procedure CreateHtmlFromXml(Document: Record "CDC Document"): Boolean
     var
         APIMgt: Codeunit "DCADV File API Management";
     begin
@@ -103,38 +118,8 @@ codeunit 63061 "DCADV File API Event Handler"
             exit;
 
         if not Document.HasHtmlFile() then
-            IsHandled := ApiMgt.CreateDocumentHtml(Document);
+            exit(ApiMgt.CreateDocumentHtml(Document));
     end;
-
-    /* [EventSubscriber(ObjectType::Codeunit, Codeunit::"CDC Doc. File Events", OnHasFile, '', false, false)]
-     local procedure DocFileEvents_OnHasFile(FileName: Text[1024]; Company: Text[50]; DocumentNo: Code[20]; FileType: Integer; var Result: Boolean; var Handled: Boolean)
-     var
-         Document: Record "CDC Document";
-         APIMgt: Codeunit "DCADV File API Management";
-     begin
-         case FileType of
-             Filetypes::Html:
-                 begin
-                     if not DCSetup.Get() then
-                         exit;
-
-                     if DCSetup."API Url" = '' then
-                         exit;
-
-                     if not Document.Get(DocumentNo) then
-                         exit;
-
-                     if not Document.HasXmlFile() then
-                         exit;
-
-                     if Document."XML Document Type" = Document."XML Document Type"::" " then
-                         exit;
-
-                     Result := ApiMgt.CreateDocumentHtml(Document);
-                     Handled := Result;
-                 end;
-         end;
-     end;*/
 
     var
         DCSetup: Record "CDC Document Capture Setup";

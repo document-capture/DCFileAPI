@@ -88,33 +88,6 @@ codeunit 63063 "DCADV Http Management"
     end;
 
     /// <summary>
-    /// Sends a request to the File API and returns the response as a JsonArray.
-    /// </summary>
-    /// <param name="JsonArray">returned variable of HttpResponse parsed as JsonArray </param>
-    /// <param name="HttpContentContent">Http Content as application/json content type</param>
-    /// <param name="ApiService">Parameter/Uri of the DC File API - e.g. ConvertTiffToPng</param>
-    /// <param name="Method">Http Methods like GET, POST, PUT</param>
-    /// <returns>True if the request have been send successfully and a json object has been retrieved from the response</returns>
-    internal procedure SendHttpRequest(var JsonArray: JsonArray; HttpContentContent: Text; ApiService: Text[100]; Method: Text[10]): Boolean
-    var
-        HttpResponse: HttpResponseMessage;
-        JsonResponse: JsonToken;
-        ResponseInStr: InStream;
-    begin
-        if not SendHttpRequest(HttpResponse, HttpContentContent, ApiService, Method) then
-            exit(false);
-
-        HttpResponse.Content.ReadAs(ResponseInStr);
-
-        if JsonResponse.ReadFrom(ResponseInStr) then begin
-            if JsonResponse.IsArray then begin
-                JsonArray := JsonResponse.AsArray();
-                exit(true);
-            end;
-        end;
-    end;
-
-    /// <summary>
     /// Sends a request to the File API and returns the response as a JsonObject.
     /// </summary>
     /// <param name="HttpResponse">Returned HttpResponse</param>
@@ -129,7 +102,6 @@ codeunit 63063 "DCADV Http Management"
         HttpRequestMessage: HttpRequestMessage;
         HttpClient: HttpClient;
         ResponseText: Text;
-
         lblHttpErrorMsg: Label 'Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3', Locked = false, Comment = 'Shows the error message if the API call was not successfull. %1 = API Service, %2 = Status Code, %3 = Reason';
     begin
         DCSetup.Get();

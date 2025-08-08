@@ -3,6 +3,42 @@
   <file datatype="xml" source-language="en-US" target-language="de-DE" original="DC File API.g.xlf">
     <body>
       <group id="body">
+        <trans-unit id="Codeunit 1310323672 - NamedType 3712881" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 of %2</source>
+          <target>%1 von %2</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - NamedType RotatingPagesProgressCounterLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - NamedType 573417673" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotating pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <target>Drehe Seiten\#1####################\@2@@@@@@@@@@@@@@@@@@@@</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - NamedType RotatingPagesProgressWindowLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - Method 2371342291 - NamedType 1502176255" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Do you want to delete the selected page?</source>
+          <target>Möchten Sie die ausgewählte Seite löschen?</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - Method DeletePages - NamedType DeleteSelectedPageQst</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - Method 2371342291 - NamedType 83108210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Do you want to delete the selected %1 pages?</source>
+          <target>Möchten Sie die ausgewählte %1 Seiten löschen?</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - Method DeletePages - NamedType DeleteSelectedPagesQst</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310323672 - Method 2371342291 - NamedType 683339427" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deleting pages\#1####################\@2@@@@@@@@@@@@@@@@@@@@</source>
+          <target>Lösche Seiten\#1####################\@2@@@@@@@@@@@@@@@@@@@@</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV Doc. Modification Mgt. - Method DeletePages - NamedType DeletingPagesProgress</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1608782232 - NamedType 1912297113" size-unit="char" translate="yes" xml:space="preserve">
+          <source>It was not possible to upload the file (%1).\\The following error occurred during the upload: %2</source>
+          <target>Es war nicht möglich, die Datei (%1) hochzuladen.\Der folgende Fehler ist während des Uploads aufgetreten: %2</target>
+          <note from="Developer" annotates="general" priority="2">%1 = File name, %2 = GetLastErrorText</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit DCADV File Service Management - NamedType UploadFSOperationNotSuccessfulErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 4187524457 - Method 4204766735 - NamedType 3326485837" size-unit="char" translate="yes" xml:space="preserve">
           <source>Error during DC File API Conversion:\API Service:%1\Status Code:%2\Reason:%3</source>
           <target>Fehler bei der DC File API-Konvertierung:\API Service:%1\Status Code:%2\Ursache:%3</target>
@@ -148,6 +184,18 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Functions - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2477294019 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete the selected page from the document.</source>
+          <target>Löscht die ausgewählte Seite aus dem Dokument.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Delete - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 2477294019 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete</source>
+          <target>Löschen</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Delete - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2502520452 - Action 2820573540 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
           <source>Bring documents together</source>
           <target>Dokumente zusammenführen</target>
@@ -195,6 +243,30 @@
           <target>Nach oben</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action Move Up - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 4148412235 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotate the current page 90 degrees in clockwise direction.</source>
+          <target>Dreht die aktuelle Seite um 90 Grad im Uhrzeigersinn.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action RotateClockwise - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 4148412235 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotate right</source>
+          <target>Drehen</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action RotateClockwise - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3211118919 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotate the current page 90 degrees in anti clockwise direction.</source>
+          <target>Dreht die aktuelle Seite um 90 Grad gegen den Uhrzeigersinn.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action RotateCounterClockwise - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2502520452 - Action 3211118919 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rotate left</source>
+          <target>Drehen</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page DCADV Split and Merge local - Action RotateCounterClockwise - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2502520452 - Action 1123480694 - Property 1064389655" size-unit="char" translate="yes" xml:space="preserve">
           <source>Split the PDF file</source>
@@ -267,6 +339,12 @@
           <target>Wenn dieses Feld markiert ist, wird die Anfrage an die DC File API gespeichert und auf den Client des Benutzers heruntergeladen.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc.Capt. Setup Card Ext - Control Save requests - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 3305070326 - Field 2799988462 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2871401928">
+          <source>XML Stylesheet File Clone</source>
+          <target>XML Stylesheet File Clone</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension DCADC CDC Template Ext. - Field XML Stylesheet File Copy - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 626993724 - Field 817783429 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1019536276">
           <source>API Url</source>

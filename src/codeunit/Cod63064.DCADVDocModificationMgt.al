@@ -131,7 +131,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     internal procedure DeletePagesFromPdf(PagesToDeleteList: List of [Integer]; Document: Record "CDC Document"; var TempNewPdfFile: Record "CDC Temp File" temporary): Boolean
     var
         TempFile: Record "CDC Temp File";
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
     begin
         if not Document.GetPdfFile(TempFile) then
             exit(false);
@@ -156,7 +156,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     internal procedure DeletePagesFromTiff(PagesToDeleteList: List of [Integer]; Document: Record "CDC Document"; var TempNewTiffFile: Record "CDC Temp File" temporary): Boolean
     var
         TempFile: Record "CDC Temp File";
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
     begin
         if not Document.GetTiffFile(TempFile) then
             exit(false);
@@ -248,7 +248,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
 
     local procedure RotatePdfPages(var NewPdfTempFile: Record "CDC Temp File" temporary; PagesToRotateList: List of [Integer]; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
     var
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
         TempFile: Record "CDC Temp File";
     begin
         if not Document.GetPdfFile(TempFile) then
@@ -275,7 +275,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <returns></returns>
     local procedure RotateTiffPages(var NewTiffTempFile: Record "CDC Temp File" temporary; PagesToRotateList: List of [Integer]; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
     var
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
         TempFile: Record "CDC Temp File";
     begin
         if not Document.GetTiffFile(TempFile) then
@@ -303,7 +303,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <returns>True if split was successful</returns>
     internal procedure TiffSplit(DocumentCategory: Code[10]; var TiffTempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer) Success: Boolean
     var
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
     begin
         // Create the request body for the API call
         ApiMgt.ClearAll();
@@ -328,7 +328,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <returns>True if split was successful</returns>
     internal procedure PDFSplit(DocumentCategory: Code[10]; var PdfTempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer) Succes: Boolean
     var
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
     begin
         // Create the request body for the API call
         ApiMgt.ClearAll();
@@ -344,7 +344,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
 
     procedure TiffCombine(TempDocumentPage: Record "CDC Temp. Document Page"; var TempFile1: Record "CDC Temp File" temporary; var TempFile2: Record "CDC Temp File" temporary; var TempNewFile: Record "CDC Temp File" temporary; HideError: Boolean) Success: Boolean
     var
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
         FileApiMgt: Codeunit "DCADV File API Management";
     begin
         // Create the request body for the API call
@@ -362,7 +362,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
 
     procedure PDFCombine(TempDocumentPage: Record "CDC Temp. Document Page"; var TempFile1: Record "CDC Temp File" temporary; var TempFile2: Record "CDC Temp File" temporary; var TempNewFile: Record "CDC Temp File" temporary; HideError: Boolean) Success: Boolean
     var
-        ApiMgt: Codeunit "DCADV Api Management";
+        ApiMgt: Codeunit "DCADV Json Management";
         FileApiMgt: Codeunit "DCADV File API Management";
     begin
         // Create the request body for the API call

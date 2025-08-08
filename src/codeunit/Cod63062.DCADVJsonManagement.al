@@ -1,4 +1,4 @@
-codeunit 63069 "DCADV Api Management"
+codeunit 63062 "DCADV Json Management"
 {
     var
         Convert: Codeunit "Base64 Convert";
@@ -18,7 +18,6 @@ codeunit 63069 "DCADV Api Management"
     internal procedure AddInputFile(var TempFile: Record "CDC Temp File" temporary): Boolean
     var
         InStr: InStream;
-        Base64EncodedFile: Text;
     begin
         if not TempFile.Data.HasValue then
             exit(false);
@@ -27,6 +26,18 @@ codeunit 63069 "DCADV Api Management"
         InputFiles.Add(Convert.ToBase64(InStr));
         exit(true);
     end;
+
+    internal procedure AddFile(JsonKey: Text; var TempFile: Record "CDC Temp File" temporary): Boolean
+    var
+        InStr: InStream;
+    begin
+        if not TempFile.Data.HasValue then
+            exit(false);
+
+        TempFile.Data.CreateInStream(InStr);
+        exit(RequestBody.Add(JsonKey, Convert.ToBase64(InStr)));
+    end;
+
 
     // --- Zusätzliche Felder ---
     internal procedure AddText(JsonKey: Text; TextValue: Text)
@@ -65,16 +76,18 @@ codeunit 63069 "DCADV Api Management"
     end;
 
     // --- Body erzeugen ---
-    internal procedure GetRequestJsonBody() Body: JsonObject
+    local procedure GetRequestJsonBody() Body: JsonObject
     begin
         Body := RequestBody;
-        Body.Add('inputFiles', InputFiles); // immer anhängen
+        if InputFiles.Count > 0 then
+            Body.Add('inputFiles', InputFiles); // immer anhängen
         exit(Body);
     end;
 
-    internal procedure GetRequestJsonBodyAsText() Body: Text
+    local procedure GetRequestJsonBodyAsText() Body: Text
     begin
-        RequestBody.Add('inputFiles', InputFiles); // immer anhängen
+        if InputFiles.Count > 0 then
+            RequestBody.Add('inputFiles', InputFiles); // immer anhängen
         RequestBody.WriteTo(Body);
     end;
 
@@ -85,14 +98,14 @@ codeunit 63069 "DCADV Api Management"
         Clear(InputFiles);
     end;
 
-    // --- Beispiel für die Verwendung ---
+
     internal procedure Send(UriEndpoint: text; Method: Text): Boolean
     var
         HttpMgt: Codeunit "DCADV Http Management";
 
         JsonTempToken: JsonToken;
-        Base64PDF: Text;
     begin
+        //if not HttpMgt.SaveHttpContentToFileRequest();
         if not HttpMgt.SendHttpRequest(ResponseObject, GetRequestJsonBodyAsText(), UriEndpoint, Method) then
             exit(false);
 

@@ -2,7 +2,7 @@
   "id": "c1e1bc23-6017-434a-956b-01cde4c742f1",
   "name": "DC File API",
   "publisher": "Continia Software GmbH",
-  "version": "24.0.8.0",
+  "version": "24.1.0.0",
   "brief": "",
   "description": "Proof of concept of IIS based API to handle file handling and conversions to support universal code compliant customers without online access",
   "privacyStatement": "",
