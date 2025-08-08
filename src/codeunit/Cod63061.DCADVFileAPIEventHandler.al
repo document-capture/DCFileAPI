@@ -83,6 +83,9 @@ codeunit 63061 "DCADV File API Event Handler"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"CDC Capture Engine", OnAfterFindDocumentSource, '', false, false)]
     local procedure CaptureEngine_OnAfterFindDocumentSource(var Document: Record "CDC Document")
     begin
+        if Document."File Type" <> Document."File Type"::XML then
+            exit;
+
         if Document."Template No." = '' then begin
             if Document."Source Record ID Tree ID" <> 0 then
                 Document.VALIDATE("Template No.", Document.GetDefaultTemplate(TRUE));
