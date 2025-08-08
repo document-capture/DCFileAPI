@@ -243,7 +243,7 @@ codeunit 63062 "DCADV File API JsonObjects"
         JsonObject.Add('data', DataBase64);
         JsonObject.Add('colorMode', ColorMode.AsInteger());
         JsonObject.Add('resolution', Resolution);
-        exit(true);
+        //exit(true);
     end;
 
     local procedure CreateDeleteFromFileJson(var JsonObject: JsonObject; DataBase64: Text; PagesToDeleteJsonArray: JsonArray): Boolean

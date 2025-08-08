@@ -289,7 +289,7 @@ page 63060 "DCADV Split and Merge local"
                     begin
                         CLEAR(TempDocPage);
                         CurrPage.SETSELECTIONFILTER(TempDocPage);
-                        DCADVDocModMgt.RotatePages(TempDocPage, 270);
+                        DCADVDocModMgt.RotatePages(TempDocPage, -1);
                         UpdateImage;
                     end;
                 }
@@ -312,7 +312,7 @@ page 63060 "DCADV Split and Merge local"
                     begin
                         CLEAR(TempDocPage);
                         CurrPage.SETSELECTIONFILTER(TempDocPage);
-                        DCADVDocModMgt.RotatePages(TempDocPage, 90);
+                        DCADVDocModMgt.RotatePages(TempDocPage, 1);
                         UpdateImage;
                     end;
                 }
@@ -388,7 +388,7 @@ page 63060 "DCADV Split and Merge local"
                         END ELSE
                             Rec.SETRANGE("Entry No.");
 
-                        UpdateImage;
+                        //UpdateImage;
                     end;
                 }
             }

@@ -1,8 +1,6 @@
 codeunit 63064 "DCADV Doc. Modification Mgt."
 {
     var
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-        HttpMgt: codeunit "DCADV Http Management";
         Convert: Codeunit "Base64 Convert";
         HideWindow: Boolean;
         Window: Dialog;
@@ -90,37 +88,21 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         TempNewPdfFile: Record "CDC Temp File" temporary;
         TempNewTiffFile: Record "CDC Temp File" temporary;
         intValue: Integer;
-        PagesToDeleteJsonArray: JsonArray;
     begin
         Document.GET(DocumentNo);
         Document.CALCFIELDS("No. of Pages");
         if Document."No. of Pages" < 2 then
             Document.DELETE(TRUE)
         else begin
-
             InvalidateDocumentAIData_Cloned(Document);
 
             PagesToDeleteList.Reverse();
-            foreach intValue in PagesToDeleteList do begin
-                PagesToDeleteJsonArray.Add(IntValue);
 
-                //#TODO Document.InvalidateAIData;
-
-                DocPage.GET(DocumentNo, intValue);
-                DocPage.DELETE(TRUE);
-
-                DocPage.SETRANGE("Document No.", DocumentNo);
-                DocPage.SETFILTER("Page No.", '>%1', intValue);
-                IF DocPage.FINDSET THEN
-                    REPEAT
-                        MovePage(DocPage."Document No.", DocPage."Page No.", DocPage."Document No.", DocPage."Page No." - 1);
-                    UNTIL DocPage.NEXT = 0;
-            end;
-
-            if not DeletePagesFromPdf(PagesToDeleteJsonArray, Document, TempNewPdfFile) then
+            //HERE
+            if not DeletePagesFromPdf(PagesToDeleteList, Document, TempNewPdfFile) then
                 error('Error deleting pages from PDF file.');
 
-            if not DeletePagesFromTiff(PagesToDeleteJsonArray, Document, TempNewTiffFile) then
+            if not DeletePagesFromTiff(PagesToDeleteList, Document, TempNewTiffFile) then
                 error('Error deleting pages from Tiff file.');
 
             if not Document.SetPdfFile(TempNewPdfFile) then
@@ -129,44 +111,40 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
             if not Document.SetTiffFile(TempNewTiffFile) then
                 Error('Error setting new Tiff file for document %1.', Document."No.");
 
+            // Reorder pages in the document   
+            foreach intValue in PagesToDeleteList do begin
+                DocPage.GET(DocumentNo, intValue);
+                DocPage.DELETE(TRUE);
+
+                DocPage.SETRANGE("Document No.", DocumentNo);
+                DocPage.SETFILTER("Page No.", '>%1', PagesToDeleteList.Get(intValue));
+                IF DocPage.FINDSET THEN
+                    REPEAT
+                        MovePage(DocPage."Document No.", DocPage."Page No.", DocPage."Document No.", DocPage."Page No." - 1);
+                    UNTIL DocPage.NEXT = 0;
+            end;
+
             Commit();
             exit(true);
         end;
     end;
 
-    internal procedure DeletePagesFromPdf(PagesToDeleteJsonArray: JsonArray; Document: Record "CDC Document"; var TempNewPdfFile: Record "CDC Temp File" temporary): Boolean
+    internal procedure DeletePagesFromPdf(PagesToDeleteList: List of [Integer]; Document: Record "CDC Document"; var TempNewPdfFile: Record "CDC Temp File" temporary): Boolean
     var
-
-        JsonObject: JsonObject;
-        JsonReturnObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        PDFOutStr: OutStream;
-        Base64PDF: Text;
-        JsonBody: Text;
+        TempFile: Record "CDC Temp File";
+        ApiMgt: Codeunit "DCADV Api Management";
     begin
-        //Page.GET(DocNo, DeletePageNo);
+        if not Document.GetPdfFile(TempFile) then
+            exit(false);
 
-        if not DCADVFileAPIJsonOBj.DeleteFromPDF_Request(jsonObject, PagesToDeleteJsonArray, Document) then
-            error('Error in creating json object for DeleteFromPDF_Request');
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TempFile);
+        ApiMgt.AddIntArray('pagesToDelete', PagesToDeleteList);
 
-        // Create json body from request object
-        jsonObject.WriteTo(JsonBody);
-
-        // Build and send the request and get the response as json object        
-        if HttpMgt.SendHttpRequest(JsonReturnObject, JsonBody, 'DeleteFromPDF', 'Post') then begin
-            if JsonReturnObject.Get('Data', JsonPageDataToken) then begin
-                if not JsonPageDataToken.AsValue().IsNull then begin
-                    Base64PDF := JsonPageDataToken.AsValue().AsText();
-
-                    if StrLen(Base64PDF) = 0 then
-                        exit(false);
-
-                    TempNewPdfFile.Data.CreateOutStream(PDFOutStr);
-                    Convert.FromBase64(Base64PDF, PDFOutStr);
-                    exit(true);
-                end;
-            end;
-        end;
+        // Send request and process response
+        if ApiMgt.Send('DeleteFromPDF', 'Post') then
+            exit(ApiMgt.GetOutputFile(0, TempNewPdfFile));
     end;
 
     /// <summary>DONE
@@ -176,37 +154,22 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <param name="Document">Document record</param>
     /// <param name="TempNewTiffFile">Temp. tiff file after deleting the documents</param>
     /// <returns></returns>
-    internal procedure DeletePagesFromTiff(PagesToDeleteJsonArray: JsonArray; Document: Record "CDC Document"; var TempNewTiffFile: Record "CDC Temp File" temporary): Boolean
+    internal procedure DeletePagesFromTiff(PagesToDeleteList: List of [Integer]; Document: Record "CDC Document"; var TempNewTiffFile: Record "CDC Temp File" temporary): Boolean
     var
-        RequestJsonObject: JsonObject;
-        RequestJsonBody: Text;
-        ResponseJsonObject: JsonObject;
-        JsonDataToken: JsonToken;
-        OutStr: OutStream;
-        Base64EncodedFile: Text;
+        TempFile: Record "CDC Temp File";
+        ApiMgt: Codeunit "DCADV Api Management";
     begin
-        if not DCADVFileAPIJsonOBj.DeleteFromTiff_Request(RequestJsonObject, PagesToDeleteJsonArray, Document) then
-            error('Error in creating json object for DeleteFromPDF_Request');
+        if not Document.GetTiffFile(TempFile) then
+            exit(false);
 
-        // Create json body from request object
-        RequestJsonObject.WriteTo(RequestJsonBody);
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TempFile);
+        ApiMgt.AddIntArray('framesToDelete', PagesToDeleteList);
 
-        // Build and send the request and get the response as json object        
-        if HttpMgt.SendHttpRequest(ResponseJsonObject, RequestJsonBody, 'DeleteFromTiff', 'Post') then begin
-
-            if ResponseJsonObject.Get('Data', JsonDataToken) then begin
-                if not JsonDataToken.AsValue().IsNull then begin
-                    Base64EncodedFile := JsonDataToken.AsValue().AsText();
-
-                    if StrLen(Base64EncodedFile) = 0 then
-                        exit(false);
-
-                    TempNewTiffFile.Data.CreateOutStream(OutStr);
-                    Convert.FromBase64(Base64EncodedFile, OutStr);
-                    exit(true);
-                end;
-            end;
-        end;
+        // Send request and process response
+        if ApiMgt.Send('DeleteFromTiff', 'Post') then
+            exit(ApiMgt.GetOutputFile(0, TempNewTiffFile));
     end;
 
     /// <summary>DONe
@@ -219,7 +182,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         Document: Record "CDC Document";
         PageNo: Integer;
         TotalPages: Integer;
-        PagesToRotateList: JsonArray;
+        PagesToRotateList: List of [Integer];
     begin
         IF GUIALLOWED AND NOT HideWindow THEN BEGIN
             Window.OPEN(RotatingPagesProgressWindowLbl);
@@ -253,7 +216,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         //    SecureArchiveManagement.CalculateAndAssignFileHash(Document);
     end;
 
-    local procedure RotateDocumentPages(PagesToRotateJsonArray: JsonArray; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
+    local procedure RotateDocumentPages(PagesToRotateList: List of [Integer]; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
     var
         NewPdfTempFile: Record "CDC Temp File" temporary;
         NewTiffTempFile: Record "CDC Temp File" temporary;
@@ -263,10 +226,10 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         Document.MODIFY;
 
 
-        if not RotatePdfPages(NewPdfTempFile, PagesToRotateJsonArray, RotationAngle, Document) then
+        if not RotatePdfPages(NewPdfTempFile, PagesToRotateList, RotationAngle, Document) then
             error('Error rotating pages in Pdf file.');
 
-        if not RotateTiffPages(NewTiffTempFile, PagesToRotateJsonArray, RotationAngle, Document) then
+        if not RotateTiffPages(NewTiffTempFile, PagesToRotateList, RotationAngle, Document) then
             error('Error rotating pages in Tiff file.');
 
         if not Document.SetPdfFile(NewPdfTempFile) then
@@ -285,37 +248,23 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         exit(true);
     end;
 
-    local procedure RotatePdfPages(var NewPdfTempFile: Record "CDC Temp File" temporary; PagesToRotateJsonArray: JsonArray; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
+    local procedure RotatePdfPages(var NewPdfTempFile: Record "CDC Temp File" temporary; PagesToRotateList: List of [Integer]; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
     var
-
-        JsonObject: JsonObject;
-        JsonReturnObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        PDFOutStr: OutStream;
-        Base64PDF: Text;
-        JsonBody: Text;
+        ApiMgt: Codeunit "DCADV Api Management";
+        TempFile: Record "CDC Temp File";
     begin
-        if not DCADVFileAPIJsonOBj.RotatePdfPages_Request(JsonObject, PagesToRotateJsonArray, RotationAngle, Document) then
-            error('Error in creating json object for RotatePdfPages_Request');
+        if not Document.GetPdfFile(TempFile) then
+            exit(false);
 
-        // Create json body from request object
-        jsonObject.WriteTo(JsonBody);
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TempFile);
+        ApiMgt.AddIntArray('pagesToRotate', PagesToRotateList);
+        ApiMgt.AddInteger('rotationDirection', RotationAngle);
 
-        // Build and send the request and get the response as json object        
-        if HttpMgt.SendHttpRequest(JsonReturnObject, JsonBody, 'RotatePdfPages', 'Post') then begin
-            if JsonReturnObject.Get('Data', JsonPageDataToken) then begin
-                if not JsonPageDataToken.AsValue().IsNull then begin
-                    Base64PDF := JsonPageDataToken.AsValue().AsText();
-
-                    if StrLen(Base64PDF) = 0 then
-                        exit(false);
-
-                    NewPdfTempFile.Data.CreateOutStream(PDFOutStr);
-                    Convert.FromBase64(Base64PDF, PDFOutStr);
-                    exit(true);
-                end;
-            end;
-        end;
+        // Send request and process response
+        if ApiMgt.Send('RotatePdfPages', 'Post') then
+            exit(ApiMgt.GetOutputFile(0, NewPdfTempFile));
     end;
 
     /// <summary>
@@ -326,39 +275,23 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <param name="RotationAngle"></param>
     /// <param name="Document"></param>
     /// <returns></returns>
-    local procedure RotateTiffPages(var NewTiffTempFile: Record "CDC Temp File" temporary; PagesToRotateJsonArray: JsonArray; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
+    local procedure RotateTiffPages(var NewTiffTempFile: Record "CDC Temp File" temporary; PagesToRotateList: List of [Integer]; RotationAngle: Integer; Document: Record "CDC Document"): Boolean
     var
-
-        RequestJsonObject: JsonObject;
-        RequestJsonBody: Text;
-        ResponseJsonObject: JsonObject;
-        DataJsonToken: JsonToken;
-        TiffOutStr: OutStream;
-        Base64EncodedDoc: Text;
+        ApiMgt: Codeunit "DCADV Api Management";
+        TempFile: Record "CDC Temp File";
     begin
-        //Page.GET(DocNo, DeletePageNo);
+        if not Document.GetTiffFile(TempFile) then
+            exit(false);
 
-        if not DCADVFileAPIJsonOBj.RotateTiffPages_Request(RequestJsonObject, PagesToRotateJsonArray, RotationAngle, Document) then
-            error('Error in creating json object for RotatePdfPages_Request');
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TempFile);
+        ApiMgt.AddIntArray('pagesToRotate', PagesToRotateList);
+        ApiMgt.AddInteger('rotationDirection', RotationAngle);
 
-        // Create json body from request object
-        RequestJsonObject.WriteTo(RequestJsonBody);
-
-        // Build and send the request and get the response as json object        
-        if HttpMgt.SendHttpRequest(ResponseJsonObject, RequestJsonBody, 'RotateTiffPages', 'Post') then begin
-            if ResponseJsonObject.Get('Data', DataJsonToken) then begin
-                if not DataJsonToken.AsValue().IsNull then begin
-                    Base64EncodedDoc := DataJsonToken.AsValue().AsText();
-
-                    if StrLen(Base64EncodedDoc) = 0 then
-                        exit(false);
-
-                    NewTiffTempFile.Data.CreateOutStream(TiffOutStr);
-                    Convert.FromBase64(Base64EncodedDoc, TiffOutStr);
-                    exit(true);
-                end;
-            end;
-        end;
+        // Send request and process response
+        if ApiMgt.Send('RotateTiffPages', 'Post') then
+            exit(ApiMgt.GetOutputFile(0, NewTiffTempFile));
     end;
 
     /// <summary>
@@ -370,52 +303,19 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <param name="TempNewFile2">Temp.  file - split part 2</param>
     /// <param name="SplitAtPageNo">Page position to splut</param>
     /// <returns>True if split was successful</returns>
-    internal procedure TiffSplit(DocumentCategory: Code[10]; var TempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer) Success: Boolean
+    internal procedure TiffSplit(DocumentCategory: Code[10]; var TiffTempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer) Success: Boolean
     var
-
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-        HttpMgt: codeunit "DCADV Http Management";
-        RequestJsonObject: JsonObject;
-        RequestJsonBody: Text;
-        ResponseJsonArray: JsonArray;
-        JsonPageToken: JsonToken;
-        JsonPngObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        OutStr: OutStream;
-        Base64EncodedDoc: Text;
-        i: Integer;
+        ApiMgt: Codeunit "DCADV Api Management";
     begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.SplitTiff_Request(RequestJsonObject, TempFile, DocumentCategory) then
-            Error('Error in SplitTiff_Request');
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TiffTempFile);
+        ApiMgt.AddInteger('splitAfterPages', SplitAtPageNo);
 
-        // Create json body from request object
-        RequestJsonObject.WriteTo(RequestJsonBody);
-
-        // Build and send the request and get the response as json object        
-        if HttpMgt.SendHttpRequest(ResponseJsonArray, RequestJsonBody, 'SplitTiff?PageNo=' + format(SplitAtPageNo), 'Post') then begin
-            for i := 1 to ResponseJsonArray.Count() do begin
-                ResponseJsonArray.Get(i - 1, JsonPageToken);
-                if JsonPageToken.IsObject then begin
-                    JsonPngObject := JsonPageToken.AsObject();
-                    if JsonPngObject.Get('data', JsonPageDataToken) then begin
-                        if not JsonPageDataToken.AsValue().IsNull then begin
-                            Base64EncodedDoc := JsonPageDataToken.AsValue().AsText();
-
-                            if i = 1 then
-                                if not TempNewFile1.Data.HasValue then begin
-                                    TempNewFile1.Data.CreateOutStream(OutStr);
-                                    Convert.FromBase64(Base64EncodedDoc, OutStr);
-                                end;
-                            if i = 2 then
-                                if not TempNewFile2.Data.HasValue then begin
-                                    TempNewFile2.Data.CreateOutStream(OutStr);
-                                    Convert.FromBase64(Base64EncodedDoc, OutStr);
-                                end;
-                        end;
-                    end;
-                end;
-            end;
+        // Send request and process response
+        if ApiMgt.Send('SplitTiff', 'Post') then begin
+            if (ApiMgt.GetOutputFile(0, TempNewFile1)) then
+                exit(ApiMgt.GetOutputFile(1, TempNewFile2));
         end;
     end;
 
@@ -430,57 +330,24 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
     /// <returns>True if split was successful</returns>
     internal procedure PDFSplit(DocumentCategory: Code[10]; var PdfTempFile: Record "CDC Temp File" temporary; var TempNewFile1: Record "CDC Temp File" temporary; var TempNewFile2: Record "CDC Temp File" temporary; SplitAtPageNo: Integer) Succes: Boolean
     var
-
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
-        HttpMgt: Codeunit "DCADV Http Management";
-        i: Integer;
-        ResponseJsonArray: JsonArray;
-        JsonPageObject: JsonObject;
-        RequestJsonObject: JsonObject;
-        JsonPageDataToken: JsonToken;
-        JsonPageToken: JsonToken;
-        OutStr: OutStream;
-        Base64EncodedDoc: Text;
-        RequestJsonBody: Text;
+        ApiMgt: Codeunit "DCADV Api Management";
     begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.SplitPDF_Request(RequestJsonObject, PdfTempFile, DocumentCategory) then
-            Error('Error in SplitPDF_Request');
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(PdfTempFile);
+        ApiMgt.AddInteger('splitAfterPages', SplitAtPageNo);
 
-        // Create json body from request object
-        RequestJsonObject.WriteTo(RequestJsonBody);
-
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(ResponseJsonArray, RequestJsonBody, 'SplitPDF?PageNo=' + format(SplitAtPageNo), 'Post') then begin
-            for i := 1 to ResponseJsonArray.Count() do begin
-                ResponseJsonArray.Get(i - 1, JsonPageToken);
-                if JsonPageToken.IsObject then begin
-                    JsonPageObject := JsonPageToken.AsObject();
-                    if JsonPageObject.Get('data', JsonPageDataToken) then begin  //TODO Claus => missing serizalization in C# Code
-                        if not JsonPageDataToken.AsValue().IsNull then begin
-                            Base64EncodedDoc := JsonPageDataToken.AsValue().AsText();
-                            if StrLen(Base64EncodedDoc) = 0 then
-                                error('The returned document (Part %1) is empty. Please check the source document and contact support if the issue persists.', i);
-
-                            if i = 1 then
-                                if not TempNewFile1.Data.HasValue then begin
-                                    TempNewFile1.Data.CreateOutStream(OutStr);
-                                    Convert.FromBase64(Base64EncodedDoc, OutStr);
-                                end;
-                            if i = 2 then
-                                if not TempNewFile2.Data.HasValue then begin
-                                    TempNewFile2.Data.CreateOutStream(OutStr);
-                                    Convert.FromBase64(Base64EncodedDoc, OutStr);
-                                end;
-                        end;
-                    end;
-                end;
-            end;
+        // Send request and process response
+        if ApiMgt.Send('SplitPdf', 'Post') then begin
+            if (ApiMgt.GetOutputFile(0, TempNewFile1)) then
+                exit(ApiMgt.GetOutputFile(1, TempNewFile2));
         end;
     end;
 
     procedure TiffCombine(TempDocumentPage: Record "CDC Temp. Document Page"; var TempFile1: Record "CDC Temp File" temporary; var TempFile2: Record "CDC Temp File" temporary; var TempNewFile: Record "CDC Temp File" temporary; HideError: Boolean) Success: Boolean
     var
+        ApiMgt: Codeunit "DCADV Api Management";
+        FileApiMgt: Codeunit "DCADV File API Management";
 
         DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
         HttpMgt: Codeunit "DCADV Http Management";
@@ -491,31 +358,49 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         Base64Tiff: Text;
         JsonBody: Text;
     begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.MergeTiff_Request(jsonObject, TempFile1, TempFile2, TempDocumentPage."Document Category Code") then
-            error('Error in MergeTiff_Request');
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TempFile1);
+        ApiMgt.AddInputFile(TempFile2);
+        ApiMgt.AddInteger('dpi', FileApiMgt.GetDocumentCategoryResolution(TempDocumentPage."Document Category Code"));
+        ApiMgt.AddInteger('color', FileApiMgt.GetDocumentCategoryColorMode(TempDocumentPage."Document Category Code").AsInteger());
 
-        // Create json body from request object
-        jsonObject.WriteTo(jsonBody);
-
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(JsonPngObject, JsonBody, 'MergeTiff', 'Post') then begin
-            if JsonPngObject.Get('Data', JsonPageDataToken) then begin
-                if not JsonPageDataToken.AsValue().IsNull then begin
-                    Base64Tiff := JsonPageDataToken.AsValue().AsText();
-
-                    if not TempNewFile.Data.HasValue then begin
-                        TempNewFile.Data.CreateOutStream(PNGOutStr);
-                        Convert.FromBase64(Base64Tiff, PNGOutStr);
-                    end;
-
-                end;
-            end;
+        // Send request and process response
+        if ApiMgt.Send('MergeTiff', 'Post') then begin
+            exit(ApiMgt.GetOutputFile(0, TempNewFile));
         end;
+
+        /*
+
+                // Create json request object for conversion
+                if not DCADVFileAPIJsonOBj.MergeTiff_Request(jsonObject, TempFile1, TempFile2, TempDocumentPage."Document Category Code") then
+                    error('Error in MergeTiff_Request');
+
+                // Create json body from request object
+                jsonObject.WriteTo(jsonBody);
+
+                // Build and send the request and get the response as json object
+                if HttpMgt.SendHttpRequest(JsonPngObject, JsonBody, 'MergeTiff', 'Post') then begin
+                    if JsonPngObject.Get('Data', JsonPageDataToken) then begin
+                        if not JsonPageDataToken.AsValue().IsNull then begin
+                            Base64Tiff := JsonPageDataToken.AsValue().AsText();
+
+                            if not TempNewFile.Data.HasValue then begin
+                                TempNewFile.Data.CreateOutStream(PNGOutStr);
+                                Convert.FromBase64(Base64Tiff, PNGOutStr);
+                            end;
+
+                        end;
+                    end;
+                end;
+                */
     end;
 
     procedure PDFCombine(TempDocumentPage: Record "CDC Temp. Document Page"; var TempFile1: Record "CDC Temp File" temporary; var TempFile2: Record "CDC Temp File" temporary; var TempNewFile: Record "CDC Temp File" temporary; HideError: Boolean) Success: Boolean
     var
+        ApiMgt: Codeunit "DCADV Api Management";
+        FileApiMgt: Codeunit "DCADV File API Management";
+
 
         DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
 
@@ -528,27 +413,38 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         Base64Tiff: Text;
         JsonBody: Text;
     begin
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.MergePDF_Request(jsonObject, TempFile1, TempFile2, TempDocumentPage."Document Category Code") then
-            Error('Error in MergePDF_Request');
+        // Create the request body for the API call
+        ApiMgt.ClearAll();
+        ApiMgt.AddInputFile(TempFile1);
+        ApiMgt.AddInputFile(TempFile2);
+        ApiMgt.AddInteger('dpi', FileApiMgt.GetDocumentCategoryResolution(TempDocumentPage."Document Category Code"));
+        ApiMgt.AddInteger('color', FileApiMgt.GetDocumentCategoryColorMode(TempDocumentPage."Document Category Code").AsInteger());
 
-        // Create json body from request object
-        jsonObject.WriteTo(jsonBody);
-
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(JsonPngObject, JsonBody, 'MergePDF', 'Post') then begin
-            if JsonPngObject.Get('Data', JsonPageDataToken) then begin
-                if not JsonPageDataToken.AsValue().IsNull then begin
-                    Base64Tiff := JsonPageDataToken.AsValue().AsText();
-
-                    if not TempNewFile.Data.HasValue then begin
-                        TempNewFile.Data.CreateOutStream(PNGOutStr);
-                        Convert.FromBase64(Base64Tiff, PNGOutStr);
-                    end;
-
-                end;
-            end;
+        // Send request and process response
+        if ApiMgt.Send('MergePdf', 'Post') then begin
+            exit(ApiMgt.GetOutputFile(0, TempNewFile));
         end;
+        /* // Create json request object for conversion
+         if not DCADVFileAPIJsonOBj.MergePDF_Request(jsonObject, TempFile1, TempFile2, TempDocumentPage."Document Category Code") then
+             Error('Error in MergePDF_Request');
+
+         // Create json body from request object
+         jsonObject.WriteTo(jsonBody);
+
+         // Build and send the request and get the response as json object
+         if HttpMgt.SendHttpRequest(JsonPngObject, JsonBody, 'MergePDF', 'Post') then begin
+             if JsonPngObject.Get('Data', JsonPageDataToken) then begin
+                 if not JsonPageDataToken.AsValue().IsNull then begin
+                     Base64Tiff := JsonPageDataToken.AsValue().AsText();
+
+                     if not TempNewFile.Data.HasValue then begin
+                         TempNewFile.Data.CreateOutStream(PNGOutStr);
+                         Convert.FromBase64(Base64Tiff, PNGOutStr);
+                     end;
+
+                 end;
+             end;
+         end;*/
     end;
 
     internal procedure MovePage(FromDocNo: Code[20]; FromPageNo: Integer; ToDocNo: Code[20]; ToPageNo: Integer)

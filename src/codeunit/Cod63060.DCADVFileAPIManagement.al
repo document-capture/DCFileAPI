@@ -64,7 +64,7 @@ codeunit 63060 "DCADV File API Management"
     var
         DocumentPage: Record "CDC Document Page";
         TempFile: Record "CDC Temp File" temporary;
-        DCADVFileAPIJsonOBj: Codeunit "DCADV File API JsonObjects";
+        DCADVFileAPIJsonObj: Codeunit "DCADV File API JsonObjects";
         Convert: Codeunit "Base64 Convert";
 
         i: Integer;
@@ -78,58 +78,44 @@ codeunit 63060 "DCADV File API Management"
         JsonPageDataToken: JsonToken;
         Base64Png: Text;
         PNGOutStr: OutStream;
+
+        ApiMgt: Codeunit "DCADV API Management";
+        TiffInStr: InStream;
     begin
         Document.CalcFields("No. of Pages");
 
-        // Create json request object for conversion
-        if not DCADVFileAPIJsonOBj.ConvertTiffToPng_Request(JsonObject, Document) then
-            error('Error creating request object for Tiff to Png conversion.');
+        if not Document.GetTiffFile(TempFile) then
+            exit(false);
 
-        // Create json body from request object
-        JsonObject.WriteTo(JsonBody);
+        if not TempFile.Data.HasValue then
+            exit(false);
 
-        // Build and send the request and get the response as json object
-        if HttpMgt.SendHttpRequest(JsonObject, JsonBody, 'ConvertTiffToPng', 'Post') then begin
-            JsonObject.Get('pages', JsonPagesToken);
-            if JsonPagesToken.IsArray then begin
-                JsonArrayValue := JsonPagesToken.AsArray();
+        TempFile.Data.CreateInStream(TiffInStr);
 
-                // Iterate through the pages array
-                if (JsonarrayValue.Count() <> Document."No. of Pages") then
-                    error('The number of pages in the response (%1) does not match the number of pages in the document %2.', JsonarrayValue.Count(), Document."No.");
+        ApiMgt.AddInputFile(Convert.ToBase64(TiffInStr));
+        ApiMgt.AddInteger('dpi', GetDocumentCategoryResolution(Document."Document Category Code"));
+        ApiMgt.AddInteger('colorMode', GetDocumentCategoryColorMode(Document."Document Category Code").AsInteger());
 
-                for i := 1 to JsonarrayValue.Count() do begin
-                    JsonarrayValue.Get(i - 1, JsonPngToken);
-                    if JsonPngToken.IsObject then begin
-                        JsonPngObject := JsonPngToken.AsObject();
-                        // Get the page data
-                        if JsonPngObject.Get('pageData', JsonPageDataToken) then begin
-                            if not JsonPageDataToken.AsValue().IsNull then begin
-                                Base64Png := JsonPageDataToken.AsValue().AsText();
+        if not ApiMgt.Send('ConvertTiffToPng', 'Post') then
+            exit(false);
 
-                                DocumentPage.SetRange("Document No.", Document."No.");
-                                DocumentPage.SetRange("Page No.", i);
-                                // Try to find the document page record or insert a new one
-                                if not DocumentPage.FindFirst() then begin
-                                    DocumentPage.Init();
-                                    DocumentPage."Document No." := Document."No.";
-                                    DocumentPage."Page No." := i;
-                                    DocumentPage.Insert();
-                                end;
-
-                                // Convert the base64 string to an Outstream and save it via the DocumentPage record to the central storage
-                                Clear(TempFile);
-                                TempFile.Data.CreateOutStream(PNGOutStr);
-                                Convert.FromBase64(Base64Png, PNGOutStr);
-                                if not DocumentPage.SetPngFile(TempFile) then
-                                    exit(false);
-                            end;
-                        end;
-                    end;
-                end;
-                // Return true if all pages have been processed successfully
-                exit((i = Document."No. of Pages"));
+        while i < ApiMgt.GetOutputFilesQty() do begin
+            DocumentPage.SetRange("Document No.", Document."No.");
+            DocumentPage.SetRange("Page No.", i + 1);
+            // Try to find the document page record or insert a new one
+            if not DocumentPage.FindFirst() then begin
+                DocumentPage.Init();
+                DocumentPage."Document No." := Document."No.";
+                DocumentPage."Page No." := i;
+                DocumentPage.Insert();
             end;
+
+            // Convert the base64 string to an Outstream and save it via the DocumentPage record to the central storage
+            Clear(TempFile);
+            if ApiMgt.GetOutputFile(i, TempFile) then
+                if not DocumentPage.SetPngFile(TempFile) then
+                    exit(false);
+            i += 1;
         end;
     end;
 
@@ -353,4 +339,43 @@ codeunit 63060 "DCADV File API Management"
         else
             DocumentId := CopyStr(FileName, DashPos + 1, EndPos - DashPos - 1);
     end;
+
+    /// <summary>
+    /// Returns the resolution of the document category. The resolution is used to convert a tiff file into a png file.
+    /// </summary>
+    /// <param name="DocCategory">Document Category Code</param>
+    /// <returns>Integer value of document categorie's resolution</returns>
+    internal procedure GetDocumentCategoryResolution(DocCategory: Code[10]): Integer
+    var
+        CDCDocumentCategory: Record "CDC Document Category";
+    begin
+        if not CDCDocumentCategory.Get(DocCategory) then
+            exit(-1);
+
+        exit(CDCDocumentCategory."TIFF Image Resolution");
+    end;
+
+    /// <summary>
+    /// Returns the color mode of the document category. The color mode is used to convert a tiff file into a png file.
+    /// </summary>
+    /// <param name="Doccategory">Document Capture - Document Category Code as each category can have different settings</param>
+    /// <returns></returns>
+    internal procedure GetDocumentCategoryColorMode(Doccategory: Code[10]): enum "DCADV Color Mode"
+    var
+        CDCDocumentCategory: Record "CDC Document Category";
+    begin
+        if CDCDocumentCategory.Get(DocCategory) then
+            case CDCDocumentCategory."TIFF Image Colour Mode" of
+                CDCDocumentCategory."TIFF Image Colour Mode"::Colour:
+                    exit("DCADV Color Mode"::Color);
+                CDCDocumentCategory."TIFF Image Colour Mode"::Gray:
+                    exit("DCADV Color Mode"::Grayscale);
+                CDCDocumentCategory."TIFF Image Colour Mode"::"Black & White":
+                    exit("DCADV Color Mode"::Monochrome);
+            end;
+
+        //Fall back to color mode if the document category is not found
+        exit("DCADV Color Mode"::Color);
+    end;
+    // Local helper procedures <<<
 }
