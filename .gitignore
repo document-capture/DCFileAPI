@@ -1,3 +1,4 @@
 .alpackages/*.app
 .vscode/*.json
 *.app
+*.zip

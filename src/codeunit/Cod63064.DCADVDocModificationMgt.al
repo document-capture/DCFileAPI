@@ -87,6 +87,7 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
         TempNewPdfFile: Record "CDC Temp File" temporary;
         TempNewTiffFile: Record "CDC Temp File" temporary;
         intValue: Integer;
+        deletedPages: Integer;
     begin
         Document.GET(DocumentNo);
         Document.CALCFIELDS("No. of Pages");
@@ -110,13 +111,16 @@ codeunit 63064 "DCADV Doc. Modification Mgt."
             if not Document.SetTiffFile(TempNewTiffFile) then
                 Error('Error setting new Tiff file for document %1.', Document."No.");
 
+            PagesToDeleteList.Reverse();
+
             // Reorder pages in the document   
             foreach intValue in PagesToDeleteList do begin
+
                 DocPage.GET(DocumentNo, intValue);
                 DocPage.DELETE(TRUE);
 
                 DocPage.SETRANGE("Document No.", DocumentNo);
-                DocPage.SETFILTER("Page No.", '>%1', PagesToDeleteList.Get(intValue));
+                DocPage.SETFILTER("Page No.", '>%1', intValue);
                 IF DocPage.FINDSET THEN
                     REPEAT
                         MovePage(DocPage."Document No.", DocPage."Page No.", DocPage."Document No.", DocPage."Page No." - 1);
