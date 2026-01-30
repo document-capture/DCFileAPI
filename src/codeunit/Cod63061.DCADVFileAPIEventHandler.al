@@ -98,7 +98,8 @@ codeunit 63061 "DCADV File API Event Handler"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"CDC Capture Engine", OnBeforeAutoDelegateDocument, '', false, false)]
     local procedure CaptureEngine_OnBeforeAutoDelegateDocument(var Document: Record "CDC Document"; var IsHandled: Boolean)
     begin
-        IsHandled := CreateHtmlFromXml(Document);
+        //SRA IsHandled must be false to not interrupt the default delegation functionality
+        CreateHtmlFromXml(Document);
     end;
 
     local procedure CreateHtmlFromXml(Document: Record "CDC Document"): Boolean

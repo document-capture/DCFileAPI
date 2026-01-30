@@ -115,7 +115,7 @@ codeunit 63060 "DCADV File API Management"
         WriteAsText(StylesheetFile, GetRemoveNamespacesXSLTText_Clone());
 
         if TransformFromStream(StylesheetFile, XmlTempFile, 'RemoveNamespace.xsl', CleanXmlFile, true) then
-            Fileinterface.SetCleanXmlFile(Document, CleanXmlFile);
+            exit(Fileinterface.SetCleanXmlFile(Document, CleanXmlFile));
     end;
 
     /// <summary>
