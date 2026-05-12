@@ -283,6 +283,31 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Doc.Capt. Setup Card Ext - Control Save requests - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1406059411 - Method 3145744128 - NamedType 195664933" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 1406059411">
+          <source>The selected template does not have a DC File API stylesheet file.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Template Card Ext - Method CopyDCFileAPIStylesheet - NamedType NoStylesheetInTemplat</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1406059411 - Action 2119432268 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2699767644">
+          <source>DC File API</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Template Card Ext - Action DcFileAPIXml - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1406059411 - Action 3508769041 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2699767644">
+          <source>Copy DC File API Stylesheet to this template</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Template Card Ext - Action CopyDCFileAPIXslt - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1406059411 - Action 3508769041 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2699767644">
+          <source>Copy Stylesheet</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Template Card Ext - Action CopyDCFileAPIXslt - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1406059411 - Control 2799988462 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2699767644">
+          <source>DC File API Stylesheet</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension DCADV Template Card Ext - Control XML Stylesheet File Copy - Property Caption</note>
+        </trans-unit>
         <trans-unit id="TableExtension 3305070326 - Field 2799988462 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2871401928">
           <source>XML Stylesheet File Clone</source>
           <note from="Developer" annotates="general" priority="2"></note>
